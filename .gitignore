@@ -1,5 +1,57 @@
+# === .NET Build ===
 bin/
 obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
+out/
+*.exe
+*.dll
+*.app
+*.pdb
+
+# === Rider & IDE Files ===
+.idea/
+*.sln.iml
+*.user
+*.suo
+*.sln.docstates
+*.vs/
+*.vscode/
+
+# === Logs ===
+*.log
+logs/
+log/
+
+# === User Secrets, Local Settings ===
+*.secret
+*.key
+secrets/
+.env
+.env.*
+
+# === App Settings (не для проды) ===
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+appsettings.*.Development.json
+
+# === EF Core ===
+*MigrationsSnapshot.cs
+
+# === Coverage / Test ===
+TestResults/
+coverage/
+coverage-report/
+*.coverage
+*.coveragexml
+
+# === Docker ===
+*.pid
+docker-compose.override.yml
+
+# === Others ===
+*.db
+*.sqlite
+*.nupkg
+*.tgz
+*.DS_Store
+Thumbs.db

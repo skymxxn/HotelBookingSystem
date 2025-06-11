@@ -3,6 +3,12 @@
   <ItemGroup>
     <ProjectReference Include="..\HotelBookingSystem.Application\HotelBookingSystem.Application.csproj" />
     <ProjectReference Include="..\HotelBookingSystem.Domain\HotelBookingSystem.Domain.csproj" />
+    <ProjectReference Include="..\HotelBookingSystem.Persistence\HotelBookingSystem.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
   </ItemGroup>
 
   <PropertyGroup>

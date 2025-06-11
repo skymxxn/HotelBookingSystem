@@ -1,11 +1,12 @@
-﻿using HotelBookingSystem.Domain.Entities;
+﻿using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBookingSystem.Persistence;
 
-public class HotelBookingContext : DbContext
+public class HotelBookingDbContext : DbContext, IHotelBookingDbContext
 {
-    public HotelBookingContext(DbContextOptions<HotelBookingContext> options) : base(options) {}
+    public HotelBookingDbContext(DbContextOptions<HotelBookingDbContext> options) : base(options) {}
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Role> Roles => Set<Role>();
@@ -15,7 +16,7 @@ public class HotelBookingContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(HotelBookingContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(HotelBookingDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 }
