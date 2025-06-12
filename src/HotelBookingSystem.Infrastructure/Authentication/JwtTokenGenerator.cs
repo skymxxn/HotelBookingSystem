@@ -15,7 +15,6 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         _configuration = configuration;
     }
 
-
     public string GenerateToken(Guid userId, string email, IEnumerable<string> roles)
     {
         var claims = new List<Claim>
@@ -27,14 +26,14 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
         var tokenDescriptor = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
+            issuer: _configuration["JwtSettings:Issuer"],
+            audience: _configuration["JwtSettings:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpirationInMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_configuration["JwtSettings:AccessTokenExpirationMinutes"])),
             signingCredentials: creds
         );
         

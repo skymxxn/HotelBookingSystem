@@ -36,6 +36,7 @@ appsettings.*.Development.json
 
 # === EF Core ===
 *MigrationsSnapshot.cs
+Migrations/
 
 # === Coverage / Test ===
 TestResults/
@@ -55,3 +56,5 @@ docker-compose.override.yml
 *.tgz
 *.DS_Store
 Thumbs.db
+
+

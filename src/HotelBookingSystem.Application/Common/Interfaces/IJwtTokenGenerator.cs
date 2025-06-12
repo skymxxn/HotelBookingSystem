@@ -1,4 +1,6 @@
-﻿namespace HotelBookingSystem.Application.Common.Interfaces;
+﻿using HotelBookingSystem.Domain.Entities;
+
+namespace HotelBookingSystem.Application.Common.Interfaces;
 
 public interface IJwtTokenGenerator
 {

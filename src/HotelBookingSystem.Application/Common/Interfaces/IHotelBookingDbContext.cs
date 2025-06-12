@@ -10,6 +10,7 @@ public interface IHotelBookingDbContext
     DbSet<Hotel> Hotels { get; }
     DbSet<Room> Rooms { get; }
     DbSet<Booking> Bookings { get; }
+    DbSet<RefreshToken> RefreshTokens { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

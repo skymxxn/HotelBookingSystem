@@ -14,4 +14,6 @@ public class User
     
     public ICollection<Room> Rooms { get; set; } = new List<Room>();
     
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    
 }

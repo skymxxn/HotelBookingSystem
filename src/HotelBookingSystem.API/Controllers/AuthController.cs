@@ -1,4 +1,6 @@
 ﻿using HotelBookingSystem.Application.Authentication.Login;
+using HotelBookingSystem.Application.Authentication.Logout;
+using HotelBookingSystem.Application.Authentication.RefreshToken;
 using HotelBookingSystem.Application.Authentication.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -38,5 +40,29 @@ public class AuthController : ControllerBase
         }
         
         return Ok(result.Value);
+    }
+    
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
+    {
+        var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return Ok(result.Value);
+    }
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] LogoutCommand command)
+    {
+        var result = await _mediator.Send(command);
+        if (result.IsFailed)
+        {
+            return BadRequest(result.Errors);
+        }
+        
+        return Ok();
     }
 }

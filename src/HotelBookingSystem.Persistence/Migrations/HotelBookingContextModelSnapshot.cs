@@ -93,6 +93,38 @@ namespace HotelBookingSystem.Persistence.Migrations
                     b.ToTable("Hotels");
                 });
 
+            modelBuilder.Entity("HotelBookingSystem.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsRevoked")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("HotelBookingSystem.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -231,6 +263,17 @@ namespace HotelBookingSystem.Persistence.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("HotelBookingSystem.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("HotelBookingSystem.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("HotelBookingSystem.Domain.Entities.Room", b =>
                 {
                     b.HasOne("HotelBookingSystem.Domain.Entities.Hotel", "Hotel")
@@ -273,6 +316,8 @@ namespace HotelBookingSystem.Persistence.Migrations
 
             modelBuilder.Entity("HotelBookingSystem.Domain.Entities.User", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Rooms");
                 });
 #pragma warning restore 612, 618

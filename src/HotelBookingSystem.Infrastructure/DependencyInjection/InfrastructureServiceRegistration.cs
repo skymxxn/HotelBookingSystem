@@ -18,6 +18,8 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IHotelBookingDbContext>(provider => provider.GetRequiredService<HotelBookingDbContext>());
         services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
+        services.AddScoped<IRefreshTokenCleaner, RefreshTokenCleaner>();
 
         return services;
     }
