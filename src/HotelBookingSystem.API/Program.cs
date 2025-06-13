@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using HotelBookingSystem.Application.Common;
 using HotelBookingSystem.Infrastructure.DependencyInjection;
@@ -5,8 +6,16 @@ using HotelBookingSystem.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Mapster;
+using MapsterMapper;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Host.UseSerilog();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -30,6 +39,8 @@ builder.Services.AddAuthentication(options =>
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
+        RoleClaimType = ClaimTypes.Role,
+        
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(key),
         
@@ -55,6 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

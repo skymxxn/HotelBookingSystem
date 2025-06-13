@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Authentication.Common;
 using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +41,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         
         var user = await _context.Users
             .Include(u => u.RefreshTokens)
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Id == refreshToken.UserId,cancellationToken);
         
         if (user == null)

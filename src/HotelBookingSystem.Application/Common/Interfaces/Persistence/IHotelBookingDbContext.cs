@@ -1,7 +1,7 @@
 ﻿using HotelBookingSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelBookingSystem.Application.Common.Interfaces;
+namespace HotelBookingSystem.Application.Common.Interfaces.Persistence;
 
 public interface IHotelBookingDbContext
 {

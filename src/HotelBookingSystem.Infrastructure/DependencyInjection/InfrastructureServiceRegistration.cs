@@ -1,6 +1,10 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
+using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Infrastructure.Authentication;
 using HotelBookingSystem.Infrastructure.Security;
+using HotelBookingSystem.Infrastructure.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +24,8 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
         services.AddScoped<IRefreshTokenCleaner, RefreshTokenCleaner>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

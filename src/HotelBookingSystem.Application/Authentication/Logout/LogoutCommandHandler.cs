@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,4 +1,5 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 
 namespace HotelBookingSystem.Infrastructure.Security;
 

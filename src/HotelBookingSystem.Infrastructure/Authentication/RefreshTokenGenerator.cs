@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using HotelBookingSystem.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 

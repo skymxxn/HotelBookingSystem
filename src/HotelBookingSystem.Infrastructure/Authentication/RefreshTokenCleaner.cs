@@ -1,4 +1,6 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Domain.Entities;
 
 namespace HotelBookingSystem.Infrastructure.Authentication;

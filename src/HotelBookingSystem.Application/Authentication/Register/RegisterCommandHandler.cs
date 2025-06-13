@@ -1,5 +1,7 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,12 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Gu
     {
         if (await _context.Users.AnyAsync(u => u.Email == request.Email, cancellationToken))
             return Result.Fail("Email is already taken.");
+        
+        var userRole = await _context.Roles
+            .FirstOrDefaultAsync(r => r.Name == "User", cancellationToken);
+        
+        if (userRole == null)
+            return Result.Fail("User role does not exist.");
 
         var user = new User
         {
@@ -30,7 +38,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Gu
             PasswordHash = _passwordHasher.Hash(request.Password),
             PhoneNumber = request.PhoneNumber,
             CreatedAt = DateTime.UtcNow,
-            Roles = new List<Role> { new Role { Name = "User" } }
+            Roles = new List<Role> { userRole }
         };
         
         _context.Users.Add(user);

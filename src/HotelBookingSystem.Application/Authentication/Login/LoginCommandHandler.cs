@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Authentication.Common;
 using HotelBookingSystem.Application.Common.Interfaces;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +42,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         _refreshTokenCleaner.CleanUp(user);
         
         await _context.SaveChangesAsync(cancellationToken);
+        
         var authResult = new AuthResultDto
         {
             AccessToken = accessToken,
