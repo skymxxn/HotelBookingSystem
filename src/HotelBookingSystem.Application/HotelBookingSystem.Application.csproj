@@ -11,6 +11,15 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Admin\Commands\" />
+    <Folder Include="Admin\Queries\" />
+    <Folder Include="Hotels\Queries\" />
+    <Folder Include="Profile\Hotels\" />
+    <Folder Include="Profile\Rooms\Commands\" />
+    <Folder Include="Profile\Rooms\Queries\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

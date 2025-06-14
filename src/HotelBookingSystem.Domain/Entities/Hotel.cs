@@ -9,6 +9,7 @@ public class Hotel
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsApproved { get; set; }
+    public bool IsVisible { get; set; }
     
     public Guid OwnerId { get; set; }
     public User Owner { get; set; } = null!;
