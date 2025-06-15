@@ -1,5 +1,5 @@
-﻿using HotelBookingSystem.Application.Admin.Queries.GetPendingHotelById;
-using HotelBookingSystem.Application.Hotels.Queries.GetHotels;
+﻿using HotelBookingSystem.Application.Features.Admin.Queries.GetPendingHotelById;
+using HotelBookingSystem.Application.Features.Hotels.Queries.GetHotels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

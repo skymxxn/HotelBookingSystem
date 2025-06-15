@@ -1,14 +1,8 @@
-using System.Security.Claims;
-using System.Text;
-using HotelBookingSystem.Application.Common;
+using HotelBookingSystem.API.DependencyInjection;
+using HotelBookingSystem.Application.DependencyInjection;
 using HotelBookingSystem.Infrastructure.DependencyInjection;
-using HotelBookingSystem.Persistence;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+using HotelBookingSystem.Persistence.DependencyInjection;
 using Serilog;
-using Mapster;
-using MapsterMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,47 +11,11 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 builder.Host.UseSerilog();
 
-builder.Services.AddInfrastructure(builder.Configuration);
-
-builder.Services.AddDbContext<HotelBookingDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(IApplicationMarker).Assembly));
-
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]!);
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        RoleClaimType = ClaimTypes.Role,
-        
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        
-        ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
-        
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero 
-    };
-});
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration)
+    .AddPersistence(builder.Configuration)
+    .AddPresentation(builder.Configuration);
 
 var app = builder.Build();
 
@@ -75,5 +33,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+Log.Information("HotelBookingSystem is starting up on server {Url}",
+    builder.Configuration["ASPNETCORE_URLS"] ?? "http://localhost:5000");
 
 app.Run();

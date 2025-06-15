@@ -12,12 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Admin\Commands\" />
-    <Folder Include="Admin\Queries\" />
-    <Folder Include="Hotels\Queries\" />
-    <Folder Include="Profile\Hotels\" />
-    <Folder Include="Profile\Rooms\Commands\" />
-    <Folder Include="Profile\Rooms\Queries\" />
+    <Folder Include="Features\" />
   </ItemGroup>
 
   <PropertyGroup>

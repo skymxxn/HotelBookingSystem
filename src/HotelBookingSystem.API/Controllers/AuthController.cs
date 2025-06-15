@@ -1,7 +1,7 @@
-﻿using HotelBookingSystem.Application.Authentication.Login;
-using HotelBookingSystem.Application.Authentication.Logout;
-using HotelBookingSystem.Application.Authentication.RefreshToken;
-using HotelBookingSystem.Application.Authentication.Register;
+﻿using HotelBookingSystem.Application.Features.Authentication.Login;
+using HotelBookingSystem.Application.Features.Authentication.Logout;
+using HotelBookingSystem.Application.Features.Authentication.RefreshToken;
+using HotelBookingSystem.Application.Features.Authentication.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

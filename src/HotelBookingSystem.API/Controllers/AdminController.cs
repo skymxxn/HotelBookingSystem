@@ -1,6 +1,6 @@
-﻿using HotelBookingSystem.Application.Admin.Commands.ApproveHotel;
-using HotelBookingSystem.Application.Admin.Queries.GetPendingHotelById;
-using HotelBookingSystem.Application.Admin.Queries.GetPendingHotels;
+﻿using HotelBookingSystem.Application.Features.Admin.Commands.ApproveHotel;
+using HotelBookingSystem.Application.Features.Admin.Queries.GetPendingHotelById;
+using HotelBookingSystem.Application.Features.Admin.Queries.GetPendingHotels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
