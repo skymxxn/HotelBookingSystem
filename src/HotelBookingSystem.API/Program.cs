@@ -1,4 +1,6 @@
 using HotelBookingSystem.API.DependencyInjection;
+using HotelBookingSystem.API.Extensions;
+using HotelBookingSystem.Application.Common.Mappings;
 using HotelBookingSystem.Application.DependencyInjection;
 using HotelBookingSystem.Infrastructure.DependencyInjection;
 using HotelBookingSystem.Persistence.DependencyInjection;
@@ -16,6 +18,8 @@ builder.Services
     .AddInfrastructure(builder.Configuration)
     .AddPersistence(builder.Configuration)
     .AddPresentation(builder.Configuration);
+
+MapsterConfig.RegisterMappings();
 
 var app = builder.Build();
 
@@ -36,5 +40,7 @@ app.MapControllers();
 
 Log.Information("HotelBookingSystem is starting up on server {Url}",
     builder.Configuration["ASPNETCORE_URLS"] ?? "http://localhost:5000");
+
+await app.MigrateAndSeedAsync();
 
 app.Run();

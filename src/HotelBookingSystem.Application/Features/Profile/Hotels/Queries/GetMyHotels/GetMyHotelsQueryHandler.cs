@@ -1,12 +1,14 @@
-﻿using HotelBookingSystem.Application.Common.DTOs;
+﻿using FluentResults;
+using HotelBookingSystem.Application.Common.DTOs;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
+using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBookingSystem.Application.Features.Profile.Hotels.Queries.GetMyHotels;
 
-public class GetMyHotelsQueryHandler : IRequestHandler<GetMyHotelsQuery, List<HotelResponse>>
+public class GetMyHotelsQueryHandler : IRequestHandler<GetMyHotelsQuery, Result<List<HotelResponse>>>
 {
     private readonly IHotelBookingDbContext _context;
     private readonly ICurrentUserService _currentUser;
@@ -17,23 +19,14 @@ public class GetMyHotelsQueryHandler : IRequestHandler<GetMyHotelsQuery, List<Ho
         _currentUser = currentUser;
     }
     
-    public async Task<List<HotelResponse>> Handle(GetMyHotelsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<HotelResponse>>> Handle(GetMyHotelsQuery request, CancellationToken cancellationToken)
     {
         var managerId = _currentUser.GetUserId();
         var hotels = await _context.Hotels
             .Where(h => h.OwnerId == managerId)
-            .Select(h => new HotelResponse
-            {
-                Id = h.Id,
-                Name = h.Name,
-                Description = h.Description,
-                Address = h.Address,
-                CreatedAt = h.CreatedAt,
-                UpdatedAt = h.UpdatedAt,
-                IsApproved = h.IsApproved,
-                IsVisible = h.IsVisible
-            }).ToListAsync(cancellationToken);
+            .ProjectToType<HotelResponse>()
+            .ToListAsync(cancellationToken);
         
-        return hotels;
+        return Result.Ok(hotels);
     }
 }

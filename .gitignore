@@ -18,17 +18,19 @@ out/
 
 # === Logs ===
 *.log
+Logs/
 logs/
 log/
 
 # === User Secrets, Local Settings ===
+.git
 *.secret
 *.key
 secrets/
 .env
 .env.*
 
-# === App Settings (не для проды) ===
+# === App Settings ===
 appsettings.Development.json
 appsettings.Local.json
 appsettings.*.local.json
@@ -56,5 +58,6 @@ docker-compose.override.yml
 *.tgz
 *.DS_Store
 Thumbs.db
+
 
 

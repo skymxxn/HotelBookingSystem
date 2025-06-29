@@ -1,4 +1,4 @@
-﻿using HotelBookingSystem.Application.Features.Admin.Queries.GetPendingHotelById;
+﻿using HotelBookingSystem.Application.Features.Hotels.Queries.GetHotel;
 using HotelBookingSystem.Application.Features.Hotels.Queries.GetHotels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,21 +17,21 @@ public class HotelsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetApprovedHotels()
+    public async Task<IActionResult> GetHotels()
     {
         var result = await _mediator.Send(new GetHotelsQuery());
-        return Ok(result);
+        return Ok(result.Value);
     }
     
     [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetHotelById(Guid id)
+    public async Task<IActionResult> GetHotel(Guid id)
     {
-        var query = new GetPendingHotelByIdQuery(id);
+        var query = new GetHotelQuery(id);
         var result = await _mediator.Send(query);
         
-        if (result == null)
-            return NotFound();
+        if (result.IsFailed)
+            return NotFound(result.Errors);
         
-        return Ok(result);
+        return Ok(result.Value);
     }
 }

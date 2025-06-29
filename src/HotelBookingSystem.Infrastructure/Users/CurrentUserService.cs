@@ -1,5 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using Microsoft.AspNetCore.Http;
 
@@ -26,10 +25,12 @@ public class CurrentUserService : ICurrentUserService
         
         return parsedUserId;
     }
+    
+    private ClaimsPrincipal? User => _httpContextAccessor.HttpContext?.User;
 
     public List<string> GetRoles()
     {
-        var roles = _httpContextAccessor.HttpContext?.User?
+        var roles = User?
             .FindAll(ClaimTypes.Role)
             .Select(role => role.Value)
             .ToList();
@@ -41,4 +42,10 @@ public class CurrentUserService : ICurrentUserService
 
         return roles;
     }
+    
+    public bool IsAdmin() => User?.IsInRole("Admin") ?? false;
+    
+    public bool IsModerator() => User?.IsInRole("Moderator") ?? false;
+    
+    public bool IsManager() => User?.IsInRole("Manager") ?? false;
 }

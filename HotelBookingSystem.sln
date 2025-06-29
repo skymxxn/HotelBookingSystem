@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 #
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{68461E46-A56D-4D41-8956-46532B913E1A}"
 	ProjectSection(SolutionItems) = preProject
-		src\.gitignore = src\.gitignore
+		src\appsettings.Development.json = src\appsettings.Development.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingSystem.API", "src\HotelBookingSystem.API\HotelBookingSystem.API.csproj", "{1E76AB4B-0411-4998-A0CE-F92DE16558A2}"

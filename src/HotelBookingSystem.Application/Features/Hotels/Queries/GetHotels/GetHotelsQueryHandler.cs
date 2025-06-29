@@ -1,11 +1,13 @@
-﻿using HotelBookingSystem.Application.Common.DTOs;
+﻿using FluentResults;
+using HotelBookingSystem.Application.Common.DTOs;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
+using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HotelBookingSystem.Application.Features.Hotels.Queries.GetHotels;
 
-public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, List<HotelResponse>>
+public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List<HotelResponse>>>
 {
     private readonly IHotelBookingDbContext _context;
     
@@ -14,23 +16,13 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, List<HotelR
         _context = context;
     }
     
-    public async Task<List<HotelResponse>> Handle(GetHotelsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<HotelResponse>>> Handle(GetHotelsQuery request, CancellationToken cancellationToken)
     {
         var hotels = await _context.Hotels
             .Where(h => h.IsVisible)
-            .Select(h => new HotelResponse
-            {
-                Id = h.Id,
-                Name = h.Name,
-                Description = h.Description,
-                Address = h.Address,
-                CreatedAt = h.CreatedAt,
-                UpdatedAt = h.UpdatedAt,
-                IsApproved = h.IsApproved,
-                IsVisible = h.IsVisible
-            })
+            .ProjectToType<HotelResponse>()
             .ToListAsync(cancellationToken);
 
-        return hotels;
+        return Result.Ok(hotels);
     }
 }

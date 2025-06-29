@@ -4,4 +4,7 @@ public interface ICurrentUserService
 {
     Guid GetUserId();
     List<string> GetRoles();
+    bool IsAdmin();
+    bool IsModerator();
+    bool IsManager();
 }

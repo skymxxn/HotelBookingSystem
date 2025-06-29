@@ -1,7 +1,7 @@
-﻿using HotelBookingSystem.Application.Features.Authentication.Login;
-using HotelBookingSystem.Application.Features.Authentication.Logout;
-using HotelBookingSystem.Application.Features.Authentication.RefreshToken;
-using HotelBookingSystem.Application.Features.Authentication.Register;
+﻿using HotelBookingSystem.Application.Features.Authentication.Commands.Login;
+using HotelBookingSystem.Application.Features.Authentication.Commands.Logout;
+using HotelBookingSystem.Application.Features.Authentication.Commands.RefreshToken;
+using HotelBookingSystem.Application.Features.Authentication.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,10 +22,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterCommand command)
     {
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
         
         return Ok(result.Value);
     }
@@ -34,10 +33,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginCommand command)
     {
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
         
         return Ok(result.Value);
     }
@@ -46,10 +44,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand command)
     {
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
         
         return Ok(result.Value);
     }
@@ -58,10 +55,9 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Logout([FromBody] LogoutCommand command)
     {
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
         
         return Ok();
     }

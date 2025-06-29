@@ -1,6 +1,7 @@
-﻿using HotelBookingSystem.Application.Common.DTOs;
+﻿using FluentResults;
+using HotelBookingSystem.Application.Common.DTOs;
 using MediatR;
 
 namespace HotelBookingSystem.Application.Features.Hotels.Queries.GetHotels;
 
-public record GetHotelsQuery : IRequest<List<HotelResponse>>;
+public record GetHotelsQuery : IRequest<Result<List<HotelResponse>>>;

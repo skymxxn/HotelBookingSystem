@@ -4,7 +4,7 @@ using HotelBookingSystem.Application.Features.Profile.Hotels.Commands.DeleteHote
 using HotelBookingSystem.Application.Features.Profile.Hotels.Commands.HideHotel;
 using HotelBookingSystem.Application.Features.Profile.Hotels.Commands.PublishHotel;
 using HotelBookingSystem.Application.Features.Profile.Hotels.Commands.UpdateHotel;
-using HotelBookingSystem.Application.Features.Profile.Hotels.Queries.GetMyHotelById;
+using HotelBookingSystem.Application.Features.Profile.Hotels.Queries.GetMyHotel;
 using HotelBookingSystem.Application.Features.Profile.Hotels.Queries.GetMyHotels;
 using Mapster;
 using MediatR;
@@ -30,20 +30,20 @@ public class ProfileController : ControllerBase
     {
         var query = new GetMyHotelsQuery();
         var result = await _mediator.Send(query);
-        return Ok(result);
+        return Ok(result.Value);
     }
     
     [Authorize(Roles = "Manager")]
     [HttpGet("hotels/{id:guid}")]
-    public async Task<IActionResult> GetMyHotelById(Guid id)
+    public async Task<IActionResult> GetMyHotel(Guid id)
     {
-        var query = new GetMyHotelByIdQuery(id);
+        var query = new GetMyHotelQuery(id);
         var result = await _mediator.Send(query);
         
-        if (result == null)
+        if (result.Value == null)
             return NotFound();
         
-        return Ok(result);
+        return Ok(result.Value);
     }
     
     [Authorize(Roles = "Manager")]
