@@ -24,5 +24,7 @@ public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
             .NotEmpty().WithMessage("Phone number is required.")
             .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Invalid phone number format.")
             .MaximumLength(15).WithMessage("Phone number must not exceed 15 characters.");
+        RuleFor(x => x.RoleId)
+            .NotEmpty().WithMessage("Role ID is required.");
     }
 }

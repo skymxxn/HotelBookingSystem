@@ -8,5 +8,6 @@ public sealed record RegisterCommand(
     string LastName,
     string Email,
     string Password,
-    string PhoneNumber
+    string PhoneNumber,
+    string RoleId
     ) : IRequest<Result<Guid>>;
