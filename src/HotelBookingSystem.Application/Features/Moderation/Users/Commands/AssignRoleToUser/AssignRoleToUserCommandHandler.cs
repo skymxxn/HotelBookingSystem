@@ -55,8 +55,8 @@ public class AssignRoleToUserCommandHandler : IRequestHandler<AssignRoleToUserCo
 
         if (user.Roles.Any(r => r.Id == role.Id))
         {
-            _logger.LogWarning("User with ID {UserId} already has role {RoleName}", request.UserId, role.Name);
-            return Result.Fail("User already has this role");
+            _logger.LogInformation("User with ID {UserId} already has role {RoleName}", request.UserId, role.Name);
+            return Result.Ok();
         }
         
         user.Roles.Add(role);

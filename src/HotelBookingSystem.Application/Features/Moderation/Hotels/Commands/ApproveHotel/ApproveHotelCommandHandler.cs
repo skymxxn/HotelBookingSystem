@@ -33,8 +33,8 @@ public class ApproveHotelCommandHandler : IRequestHandler<ApproveHotelCommand, R
 
         if (hotel.IsApproved)
         {
-            _logger.LogWarning("Hotel with ID {HotelId} is already approved", request.HotelId);
-            return Result.Fail("Hotel is already approved.");
+            _logger.LogInformation("Hotel with ID {HotelId} is already approved", request.HotelId);
+            return Result.Ok();
         }
         
         hotel.IsApproved = true;

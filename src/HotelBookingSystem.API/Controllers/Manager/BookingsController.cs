@@ -1,7 +1,7 @@
-using HotelBookingSystem.Application.Features.Manager.Booking.Commands.ConfirmBooking;
-using HotelBookingSystem.Application.Features.Manager.Booking.Commands.RejectBooking;
-using HotelBookingSystem.Application.Features.Manager.Booking.Queries.GetBooking;
-using HotelBookingSystem.Application.Features.Manager.Booking.Queries.GetBookings;
+using HotelBookingSystem.Application.Features.Manager.Bookings.Commands.ConfirmBooking;
+using HotelBookingSystem.Application.Features.Manager.Bookings.Commands.RejectBooking;
+using HotelBookingSystem.Application.Features.Manager.Bookings.Queries.GetBooking;
+using HotelBookingSystem.Application.Features.Manager.Bookings.Queries.GetBookings;
 using HotelBookingSystem.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,7 +11,7 @@ namespace HotelBookingSystem.API.Controllers.Manager;
 
 [ApiController]
 [Authorize(Roles = "Manager, Admin")]
-[Route("api/[controller]")]
+[Route("api/manager/[controller]")]
 public class BookingsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -24,6 +24,7 @@ public class BookingsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetBookings(
         [FromQuery] Guid? roomId,
+        [FromQuery] Guid? userId,
         [FromQuery] BookingStatus? status,
         [FromQuery] DateTime? fromDate,
         [FromQuery] DateTime? toDate
@@ -32,6 +33,7 @@ public class BookingsController : ControllerBase
         var query = new GetBookingsQuery
         {
             RoomId = roomId,
+            UserId = userId,
             Status = status,
             FromDate = fromDate,
             ToDate = toDate
@@ -53,25 +55,27 @@ public class BookingsController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpPost("confirm")]
-    public async Task<IActionResult> ConfirmBooking([FromBody] ConfirmBookingCommand command)
+    [HttpPost("{id:guid}/confirm")]
+    public async Task<IActionResult> ConfirmBooking(Guid id)
     {
+        var command = new ConfirmBookingCommand(id);
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
+        
         return Ok(result.Value);
     }
 
-    [HttpPost("reject")]
-    public async Task<IActionResult> RejectBooking([FromBody] RejectBookingCommand command)
+    [HttpPost("{id:guid}/reject")]
+    public async Task<IActionResult> RejectBooking(Guid id, [FromBody] RejectBookingCommand request)
     {
+        var command = request with { BookingId = id };
         var result = await _mediator.Send(command);
+        
         if (result.IsFailed)
-        {
             return BadRequest(result.Errors);
-        }
+        
         return Ok(result.Value);
     }
 }

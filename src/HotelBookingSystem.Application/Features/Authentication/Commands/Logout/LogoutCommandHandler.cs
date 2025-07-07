@@ -38,8 +38,8 @@ public class LogoutCommandHandler : IRequestHandler<LogoutCommand, Result>
         
         if (refreshToken == null || refreshToken.IsRevoked)
         {
-            _logger.LogInformation("Refresh token not found or already revoked for user {UserId}", _currentUser.GetUserId());
-            return Result.Ok();
+            _logger.LogWarning("Refresh token not found or already revoked for user {UserId}", _currentUser.GetUserId());
+            return Result.Fail(new Error("Invalid or already revoked refresh token."));
         }
         
         refreshToken.IsRevoked = true;

@@ -47,8 +47,8 @@ public class ApproveRoomCommandHandler : IRequestHandler<ApproveRoomCommand, Res
         
         if (room.IsApproved)
         {
-            _logger.LogWarning("Room with ID {RoomId} in hotel {HotelId} is already approved", request.RoomId, request.HotelId);
-            return Result.Fail(new Error("Room is already approved."));
+            _logger.LogInformation("Room with ID {RoomId} in hotel {HotelId} is already approved", request.RoomId, request.HotelId);
+            return Result.Ok(room.Id);
         }
 
         room.IsApproved = true;

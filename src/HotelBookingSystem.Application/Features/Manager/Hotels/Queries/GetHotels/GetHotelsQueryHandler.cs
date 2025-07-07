@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Hotels;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using Mapster;
