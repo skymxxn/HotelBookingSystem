@@ -1,8 +1,9 @@
 using FluentResults;
 using FluentValidation;
-using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Rooms;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
+using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -38,7 +39,6 @@ public class SetRoomPublicationCommandHandler : IRequestHandler<SetRoomPublicati
         var room = await _context.Rooms
             .FirstOrDefaultAsync(r =>
                     r.Id == request.RoomId &&
-                    r.HotelId == request.HotelId &&
                     r.Hotel.OwnerId == managerId,
                 cancellationToken);
         
@@ -47,17 +47,11 @@ public class SetRoomPublicationCommandHandler : IRequestHandler<SetRoomPublicati
             _logger.LogWarning("Room with ID {RoomId} not found or access denied for user {UserId}", request.RoomId, managerId);
             return Result.Fail(new Error("Room not found or access denied."));
         }
-        
-        if (!room.IsApproved)
-        {
-            _logger.LogWarning("Room with ID {RoomId} is not approved and cannot be published by user {UserId}", request.RoomId, managerId);
-            return Result.Fail(new Error("Room is not approved and cannot be published."));
-        }
 
         if (room.IsPublished == request.IsPublished)
         {
-            _logger.LogWarning("Room with ID {RoomId} publication status is already set to {IsPublished} for user {UserId}", request.RoomId, request.IsPublished, managerId);
-            return Result.Fail(new Error($"Room publication status is already set to {request.IsPublished}."));
+            _logger.LogInformation("Room with ID {RoomId} publication status is already set to {IsPublished} for user {UserId}", request.RoomId, request.IsPublished, managerId);
+            return Result.Ok();
         }
 
         room.IsPublished = request.IsPublished;
@@ -65,6 +59,6 @@ public class SetRoomPublicationCommandHandler : IRequestHandler<SetRoomPublicati
         
         _logger.LogInformation("Room with ID {RoomId} publication status set to {IsPublished} by user {UserId}", request.RoomId, request.IsPublished, managerId);
         
-        return Result.Ok();
+        return Result.Ok(room.Adapt<RoomResponse>());
     }
 }

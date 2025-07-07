@@ -4,6 +4,7 @@ using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HotelBookingSystem.Application.Features.Manager.Rooms.Commands.CreateRoom;
@@ -25,6 +26,8 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Resul
 
     public async Task<Result<Guid>> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Capacity: {Capacity}, Price: {Price}", request.Capacity, request.PricePerNight);
+
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         
         if (!validationResult.IsValid)
@@ -33,7 +36,8 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Resul
             return Result.Fail(validationResult.Errors.Select(e => e.ErrorMessage).ToList());
         }
         
-        var hotel = await _context.Hotels.FindAsync([request.HotelId], cancellationToken);
+        var hotel = await _context.Hotels.
+            FirstOrDefaultAsync(h => h.Id == request.HotelId, cancellationToken);
         
         if (hotel == null)
         {
@@ -48,8 +52,7 @@ public class CreateRoomCommandHandler : IRequestHandler<CreateRoomCommand, Resul
             Description = request.Description,
             PricePerNight = request.PricePerNight,
             Capacity = request.Capacity,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow
         };
 
         _context.Rooms.Add(room);

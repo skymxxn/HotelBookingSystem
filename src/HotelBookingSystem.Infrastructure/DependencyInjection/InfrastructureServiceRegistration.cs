@@ -1,5 +1,7 @@
-﻿using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+﻿using HotelBookingSystem.Application.Common.Interfaces.Access;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
+using HotelBookingSystem.Infrastructure.Access;
 using HotelBookingSystem.Infrastructure.Authentication;
 using HotelBookingSystem.Infrastructure.Security;
 using HotelBookingSystem.Infrastructure.Users;
@@ -18,6 +20,7 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IRefreshTokenCleaner, RefreshTokenCleaner>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IAccessService, AccessService>();
 
         return services;
     }

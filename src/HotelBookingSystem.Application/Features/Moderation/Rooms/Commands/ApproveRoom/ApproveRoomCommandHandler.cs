@@ -37,25 +37,25 @@ public class ApproveRoomCommandHandler : IRequestHandler<ApproveRoomCommand, Res
 
         var room = await _context.Rooms
             .Include(r => r.Hotel)
-            .FirstOrDefaultAsync(r => r.Id == request.RoomId && r.HotelId == request.HotelId, cancellationToken);
+            .FirstOrDefaultAsync(r => r.Id == request.RoomId, cancellationToken);
         
         if (room == null)
         {
-            _logger.LogWarning("Room with ID {RoomId} in hotel {HotelId} not found", request.RoomId, request.HotelId);
+            _logger.LogWarning("Room with ID {RoomId} not found", request.RoomId);
             return Result.Fail(new Error("Room not found."));
         }
         
         if (room.IsApproved)
         {
-            _logger.LogWarning("Room with ID {RoomId} in hotel {HotelId} is already approved", request.RoomId, request.HotelId);
-            return Result.Fail(new Error("Room is already approved."));
+            _logger.LogInformation("Room with ID {RoomId} is already approved", request.RoomId);
+            return Result.Ok(room.Id);
         }
 
         room.IsApproved = true;
         await _context.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Room with ID {RoomId} in hotel {HotelId} approved successfully by moderator {ModeratorId}", 
-            request.RoomId, request.HotelId, moderatorId);
+        _logger.LogInformation("Room with ID {RoomId} approved successfully by moderator {ModeratorId}", 
+            request.RoomId, moderatorId);
         
         return Result.Ok(room.Id);
     }
