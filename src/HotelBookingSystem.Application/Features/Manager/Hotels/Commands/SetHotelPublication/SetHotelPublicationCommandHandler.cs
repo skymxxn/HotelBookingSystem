@@ -51,8 +51,8 @@ public class SetHotelPublicationCommandHandler : IRequestHandler<SetHotelPublica
         
         if (hotel.IsPublished == request.IsPublished)
         {
-            _logger.LogWarning("Hotel with ID {HotelId} publication status is already set to {IsPublished} for user {UserId}", request.HotelId, request.IsPublished, managerId);
-            return Result.Fail(new Error($"Hotel publication status is already set to {request.IsPublished}."));
+            _logger.LogInformation("Hotel with ID {HotelId} publication status is already set to {IsPublished} for user {UserId}", request.HotelId, request.IsPublished, managerId);
+            return Result.Ok();
         }
 
         hotel.IsPublished = request.IsPublished;

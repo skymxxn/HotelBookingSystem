@@ -1,4 +1,6 @@
 ﻿using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Common;
+using HotelBookingSystem.Application.Common.DTOs.Hotels;
 using HotelBookingSystem.Application.Features.Manager.Hotels.Commands.CreateHotel;
 using HotelBookingSystem.Application.Features.Manager.Hotels.Commands.DeleteHotel;
 using HotelBookingSystem.Application.Features.Manager.Hotels.Commands.SetHotelPublication;

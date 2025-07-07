@@ -1,6 +1,7 @@
 using FluentResults;
 using FluentValidation;
 using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Rooms;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using MediatR;
@@ -56,8 +57,8 @@ public class SetRoomPublicationCommandHandler : IRequestHandler<SetRoomPublicati
 
         if (room.IsPublished == request.IsPublished)
         {
-            _logger.LogWarning("Room with ID {RoomId} publication status is already set to {IsPublished} for user {UserId}", request.RoomId, request.IsPublished, managerId);
-            return Result.Fail(new Error($"Room publication status is already set to {request.IsPublished}."));
+            _logger.LogInformation("Room with ID {RoomId} publication status is already set to {IsPublished} for user {UserId}", request.RoomId, request.IsPublished, managerId);
+            return Result.Ok();
         }
 
         room.IsPublished = request.IsPublished;

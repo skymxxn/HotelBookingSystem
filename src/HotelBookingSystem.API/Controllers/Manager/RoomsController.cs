@@ -1,4 +1,6 @@
 ﻿using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Common;
+using HotelBookingSystem.Application.Common.DTOs.Rooms;
 using HotelBookingSystem.Application.Features.Manager.Rooms.Commands.CreateRoom;
 using HotelBookingSystem.Application.Features.Manager.Rooms.Commands.DeleteRoom;
 using HotelBookingSystem.Application.Features.Manager.Rooms.Commands.SetRoomPublication;

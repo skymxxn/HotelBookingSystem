@@ -1,4 +1,4 @@
-namespace HotelBookingSystem.Application.Common.DTOs;
+namespace HotelBookingSystem.Application.Common.DTOs.Common;
 
 public class SetPublicationRequest
 {

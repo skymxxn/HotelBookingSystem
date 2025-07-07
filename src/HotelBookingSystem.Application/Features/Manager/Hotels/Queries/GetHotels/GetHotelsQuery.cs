@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Common.DTOs;
+using HotelBookingSystem.Application.Common.DTOs.Hotels;
 using MediatR;
 
 namespace HotelBookingSystem.Application.Features.Manager.Hotels.Queries.GetHotels;
