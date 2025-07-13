@@ -46,6 +46,26 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
         if (request.OwnerId.HasValue)
             query = query.Where(h => h.OwnerId == request.OwnerId.Value);
         
+        query = (request.SortBy?.ToLower(), request.SortOrder?.ToLower()) switch
+        {
+            ("name", "asc") => query.OrderBy(h => h.Name),
+            ("name", "desc") => query.OrderByDescending(h => h.Name),
+            ("address", "asc") => query.OrderBy(h => h.Address),
+            ("address", "desc") => query.OrderByDescending(h => h.Address),
+            ("isapproved", "asc") => query.OrderBy(h => h.IsApproved),
+            ("isapproved", "desc") => query.OrderByDescending(h => h.IsApproved),
+            ("ispublished", "asc") => query.OrderBy(h => h.IsPublished),
+            ("ispublished", "desc") => query.OrderByDescending(h => h.IsPublished),
+            ("createdat", "asc") => query.OrderBy(h => h.CreatedAt),
+            ("createdat", "desc") => query.OrderByDescending(h => h.CreatedAt),
+            ("updatedat", "asc") => query.OrderBy(h => h.UpdatedAt),
+            ("updatedat", "desc") => query.OrderByDescending(h => h.UpdatedAt),
+            _ => query.OrderByDescending(h => h.CreatedAt)
+        };
+        
+        var skip = (request.Page - 1) * request.PageSize;
+        query = query.Skip(skip).Take(request.PageSize);
+        
         var hotels = await query
             .ProjectToType<HotelResponse>()
             .ToListAsync(cancellationToken);

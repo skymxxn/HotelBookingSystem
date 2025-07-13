@@ -13,5 +13,11 @@ public record GetRoomsQuery(
     bool? IsPublished,
     DateTime? CreatedAt,
     DateTime? UpdatedAt,
-    Guid? HotelId
+    Guid? HotelId,
+    
+    string? SortBy = null,
+    string SortOrder = "desc",
+    
+    int Page = 1,
+    int PageSize = 10
 ) : IRequest<Result<List<RoomResponse>>>;

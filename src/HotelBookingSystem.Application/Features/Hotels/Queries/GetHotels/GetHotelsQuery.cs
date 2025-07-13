@@ -11,5 +11,11 @@ public record GetHotelsQuery(
     bool? IsPublished,
     DateTime? CreatedAt,
     DateTime? UpdatedAt,
-    Guid? OwnerId
+    Guid? OwnerId,
+    
+    string? SortBy = null,
+    string SortOrder = "desc",
+    
+    int Page = 1,
+    int PageSize = 10
     ) : IRequest<Result<List<HotelResponse>>>;

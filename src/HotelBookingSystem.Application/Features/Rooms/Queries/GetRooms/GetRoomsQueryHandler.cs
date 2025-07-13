@@ -52,6 +52,28 @@ public class GetRoomsQueryHandler : IRequestHandler<GetRoomsQuery, Result<List<R
         if (request.HotelId.HasValue)
             query = query.Where(r => r.HotelId == request.HotelId.Value);
         
+        query = (request.SortBy?.ToLower(), request.SortOrder?.ToLower()) switch
+        {
+            ("name", "asc") => query.OrderBy(r => r.Name),
+            ("name", "desc") => query.OrderByDescending(r => r.Name),
+            ("capacity", "asc") => query.OrderBy(r => r.Capacity),
+            ("capacity", "desc") => query.OrderByDescending(r => r.Capacity),
+            ("price", "asc") => query.OrderBy(r => r.PricePerNight),
+            ("price", "desc") => query.OrderByDescending(r => r.PricePerNight),
+            ("isapproved", "asc") => query.OrderBy(r => r.IsApproved),
+            ("isapproved", "desc") => query.OrderByDescending(r => r.IsApproved),
+            ("ispublished", "asc") => query.OrderBy(r => r.IsPublished),
+            ("ispublished", "desc") => query.OrderByDescending(r => r.IsPublished),
+            ("createdat", "asc") => query.OrderBy(r => r.CreatedAt),
+            ("createdat", "desc") => query.OrderByDescending(r => r.CreatedAt),
+            ("updatedat", "asc") => query.OrderBy(r => r.UpdatedAt),
+            ("updatedat", "desc") => query.OrderByDescending(r => r.UpdatedAt),
+            _ => query.OrderByDescending(r => r.CreatedAt)
+        };
+        
+        var skip = (request.Page - 1) * request.PageSize;
+        query = query.Skip(skip).Take(request.PageSize);
+        
         var rooms = await query
             .ProjectToType<RoomResponse>()
             .ToListAsync(cancellationToken);

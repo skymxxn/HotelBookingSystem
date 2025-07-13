@@ -52,7 +52,21 @@ public class GetBookingsQueryHandler : IRequestHandler<GetBookingsQuery, Result<
         
         if (request.ToDate.HasValue)
             query = query.Where(b => b.ToDate <= request.ToDate.Value);
+
+        query = (request.SortBy?.ToLower(), request.SortOrder?.ToLower()) switch
+        {
+            ("fromdate", "asc") => query.OrderBy(b => b.FromDate),
+            ("fromdate", "desc") => query.OrderByDescending(b => b.FromDate),
+            ("todate", "asc") => query.OrderBy(b => b.ToDate),
+            ("todate", "desc") => query.OrderByDescending(b => b.ToDate),
+            ("totalprice", "asc") => query.OrderBy(b => b.TotalPrice),
+            ("totalprice", "desc") => query.OrderByDescending(b => b.TotalPrice),
+            _ => query.OrderByDescending(b => b.CreatedAt)
+        };
         
+        var skip = (request.Page - 1) * request.PageSize;
+        query = query.Skip(skip).Take(request.PageSize);
+            
         var bookings = await query
             .ProjectToType<BookingResponse>()
             .ToListAsync(cancellationToken);

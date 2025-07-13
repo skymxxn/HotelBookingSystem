@@ -13,5 +13,11 @@ public record GetBookingsQuery(
     decimal? MaxTotalPrice,
     BookingStatus? Status,
     DateTime? FromDate,
-    DateTime? ToDate
+    DateTime? ToDate,
+    
+    string? SortBy = null,
+    string SortOrder = "desc",
+    
+    int Page = 1,
+    int PageSize = 10
     ) : IRequest<Result<List<BookingResponse>>>;
