@@ -1,6 +1,4 @@
 using HotelBookingSystem.Application.Features.Moderation.Hotels.Commands.ApproveHotel;
-using HotelBookingSystem.Application.Features.Moderation.Hotels.Queries.GetPendingHotel;
-using HotelBookingSystem.Application.Features.Moderation.Hotels.Queries.GetPendingHotels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,25 +15,6 @@ public class HotelsController : ControllerBase
     public HotelsController(ISender mediator)
     {
         _mediator = mediator;
-    }
-    
-    [HttpGet("pending")]
-    public async Task<IActionResult> GetPendingHotels()
-    {
-        var result = await _mediator.Send(new GetPendingHotelsQuery());
-        return Ok(result.Value);
-    }
-    
-    [HttpGet("pending/{id:guid}")]
-    public async Task<IActionResult> GetPendingHotel(Guid id)
-    {
-        var query = new GetPendingHotelQuery(id);
-        var result = await _mediator.Send(query);
-        
-        if (result.IsFailed)
-            return NotFound(result.Errors);
-        
-        return Ok(result.Value);
     }
     
     [HttpPost("{id:guid}/approve")]

@@ -1,8 +1,7 @@
-using HotelBookingSystem.Application.Features.Public.Bookings.Queries.GetBooking;
-using HotelBookingSystem.Application.Features.Public.Bookings.Queries.GetBookings;
-using HotelBookingSystem.Application.Features.Public.Bookings.Commands.CancelBooking;
-using HotelBookingSystem.Application.Features.Public.Bookings.Commands.CreateBooking;
-using HotelBookingSystem.Domain.Enums;
+using HotelBookingSystem.Application.Features.Bookings.Commands.CancelBooking;
+using HotelBookingSystem.Application.Features.Bookings.Commands.CreateBooking;
+using HotelBookingSystem.Application.Features.Bookings.Queries.GetBooking;
+using HotelBookingSystem.Application.Features.Bookings.Queries.GetBookings;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelBookingSystem.API.Controllers.Public;
 
 [ApiController]
-[Authorize(Roles = "User, Admin")]
+[Authorize]
 [Route("api/[controller]")]
 public class BookingsController : ControllerBase
 {
@@ -22,22 +21,9 @@ public class BookingsController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetBookings(
-        [FromQuery] Guid? roomId,
-        [FromQuery] BookingStatus? status,
-        [FromQuery] DateTime? fromDate,
-        [FromQuery] DateTime? toDate
-        )
+    public async Task<IActionResult> GetBookings([FromQuery] GetBookingsQuery query)
     {
-        var query = new GetBookingsQuery
-        {
-            RoomId = roomId,
-            Status = status,
-            FromDate = fromDate,
-            ToDate = toDate
-        };
         var result = await _mediator.Send(query);
-        
         return Ok(result.Value);
     }
     

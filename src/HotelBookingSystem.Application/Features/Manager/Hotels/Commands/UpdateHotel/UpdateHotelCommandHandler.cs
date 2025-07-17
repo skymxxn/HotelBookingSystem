@@ -42,15 +42,21 @@ public class UpdateHotelCommandHandler : IRequestHandler<UpdateHotelCommand, Res
             return Result.Fail("Hotel not found.");
         }
         
-        if (hotel.OwnerId != _currentUser.GetUserId())
+        if (hotel.OwnerId != _currentUser.GetUserId() && !_currentUser.IsAdmin())
         {
             _logger.LogWarning("User {UserId} attempted to update hotel {HotelId} without permission", _currentUser.GetUserId(), request.Id);
             return Result.Fail("You do not have permission to update this hotel.");
         }
         
-        hotel.Name = request.Name;
-        hotel.Description = request.Description;
-        hotel.Address = request.Address;
+        if (request.Name is not null)
+            hotel.Name = request.Name;
+        
+        if (request.Description is not null)
+            hotel.Description = request.Description;
+        
+        if (request.Address is not null)
+            hotel.Address = request.Address;
+        
         hotel.UpdatedAt = DateTime.UtcNow;
         hotel.IsApproved = false;
         hotel.IsPublished = false;
