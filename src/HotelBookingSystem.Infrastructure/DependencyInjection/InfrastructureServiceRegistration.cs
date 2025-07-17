@@ -1,6 +1,7 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Infrastructure.Authentication;
+using HotelBookingSystem.Infrastructure.RateLimiting;
 using HotelBookingSystem.Infrastructure.Security;
 using HotelBookingSystem.Infrastructure.Users;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,9 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IRefreshTokenCleaner, RefreshTokenCleaner>();
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+        services.AddJwtAuthentication(configuration);
+        services.AddRateLimiting();
 
         return services;
     }

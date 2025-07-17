@@ -4,11 +4,13 @@ using HotelBookingSystem.Application.Features.Authentication.Commands.RefreshTok
 using HotelBookingSystem.Application.Features.Authentication.Commands.Register;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace HotelBookingSystem.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("strict")]
 public class AuthController : ControllerBase
 {
     private readonly ISender _mediator;
