@@ -1,8 +1,5 @@
 using HotelBookingSystem.Application.Features.Manager.Bookings.Commands.ConfirmBooking;
 using HotelBookingSystem.Application.Features.Manager.Bookings.Commands.RejectBooking;
-using HotelBookingSystem.Application.Features.Manager.Bookings.Queries.GetBooking;
-using HotelBookingSystem.Application.Features.Manager.Bookings.Queries.GetBookings;
-using HotelBookingSystem.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,40 +16,6 @@ public class BookingsController : ControllerBase
     public BookingsController(IMediator mediator)
     {
         _mediator = mediator;
-    }
-    
-    [HttpGet]
-    public async Task<IActionResult> GetBookings(
-        [FromQuery] Guid? roomId,
-        [FromQuery] Guid? userId,
-        [FromQuery] BookingStatus? status,
-        [FromQuery] DateTime? fromDate,
-        [FromQuery] DateTime? toDate
-        )
-    {
-        var query = new GetBookingsQuery
-        {
-            RoomId = roomId,
-            UserId = userId,
-            Status = status,
-            FromDate = fromDate,
-            ToDate = toDate
-        };
-        var result = await _mediator.Send(query);
-        
-        return Ok(result.Value);
-    }
-    
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetBooking(Guid id)
-    {
-        var query = new GetBookingQuery(id);
-        var result = await _mediator.Send(query);
-        
-        if (result.IsFailed)
-            return NotFound(result.Errors);
-        
-        return Ok(result.Value);
     }
 
     [HttpPost("{id:guid}/confirm")]

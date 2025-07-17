@@ -8,6 +8,5 @@ public record UpdateRoomCommand(
     string Description,
     int Capacity,
     decimal PricePerNight,
-    Guid HotelId,
     Guid RoomId
 ) : IRequest<Result>;

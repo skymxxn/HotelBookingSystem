@@ -5,7 +5,7 @@ namespace HotelBookingSystem.Application.Features.Manager.Hotels.Commands.Update
 
 public record UpdateHotelCommand(
     Guid Id,
-    string Name,
-    string Description,
-    string Address
+    string? Name,
+    string? Description,
+    string? Address
 ) : IRequest<Result>;

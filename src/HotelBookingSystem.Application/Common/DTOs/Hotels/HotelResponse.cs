@@ -10,4 +10,5 @@ public class HotelResponse
     public DateTime UpdatedAt { get; set; }
     public bool IsApproved { get; set; }
     public bool IsPublished { get; set; }
+    public Guid OwnerId { get; set; }
 }

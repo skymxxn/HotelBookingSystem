@@ -11,7 +11,7 @@ public class RoomResponse
     public bool IsPublished { get; set; }
     
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     
     public Guid HotelId { get; set; }
     

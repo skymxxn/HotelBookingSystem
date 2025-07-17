@@ -48,4 +48,6 @@ public class CurrentUserService : ICurrentUserService
     public bool IsModerator() => User?.IsInRole("Moderator") ?? false;
     
     public bool IsManager() => User?.IsInRole("Manager") ?? false;
+    
+    public bool IsUser() => User?.IsInRole("User") ?? false;
 }

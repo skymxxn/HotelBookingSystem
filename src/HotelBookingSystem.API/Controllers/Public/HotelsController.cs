@@ -1,5 +1,5 @@
-﻿using HotelBookingSystem.Application.Features.Public.Hotels.Queries.GetHotel;
-using HotelBookingSystem.Application.Features.Public.Hotels.Queries.GetHotels;
+﻿using HotelBookingSystem.Application.Features.Hotels.Queries.GetHotel;
+using HotelBookingSystem.Application.Features.Hotels.Queries.GetHotels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +17,9 @@ public class HotelsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHotels()
+    public async Task<IActionResult> GetHotels([FromQuery] GetHotelsQuery query)
     {
-        var result = await _mediator.Send(new GetHotelsQuery());
+        var result = await _mediator.Send(query);
         return Ok(result.Value);
     }
     

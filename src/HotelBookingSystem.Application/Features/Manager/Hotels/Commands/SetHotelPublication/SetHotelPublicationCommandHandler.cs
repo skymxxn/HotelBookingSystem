@@ -35,18 +35,12 @@ public class SetHotelPublicationCommandHandler : IRequestHandler<SetHotelPublica
         
         var managerId = _currentUser.GetUserId();
         var hotel = await _context.Hotels
-            .FirstOrDefaultAsync(h => h.Id == request.HotelId && h.OwnerId == managerId, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == request.HotelId && (h.OwnerId == managerId || _currentUser.IsAdmin()), cancellationToken);
 
         if (hotel == null)
         {
             _logger.LogWarning("Hotel with ID {HotelId} not found or access denied for user {UserId}", request.HotelId, managerId);
             return Result.Fail(new Error("Hotel not found or access denied."));
-        }
-
-        if (!hotel.IsApproved)
-        {
-            _logger.LogWarning("Hotel with ID {HotelId} is not approved and cannot be published by user {UserId}", request.HotelId, managerId);
-            return Result.Fail(new Error("Hotel is not approved and cannot be published."));
         }
         
         if (hotel.IsPublished == request.IsPublished)

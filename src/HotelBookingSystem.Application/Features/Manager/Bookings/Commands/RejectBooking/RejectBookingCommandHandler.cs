@@ -65,7 +65,7 @@ public class RejectBookingCommandHandler : IRequestHandler<RejectBookingCommand,
         
         booking.Status = BookingStatus.Rejected;
         booking.RejectedAt = DateTime.UtcNow;
-        booking.RejectionReason = request.Reason;
+        booking.RejectionReason = request.RejectionReason;
         
         await _context.SaveChangesAsync(cancellationToken);
         

@@ -7,4 +7,5 @@ public interface ICurrentUserService
     bool IsAdmin();
     bool IsModerator();
     bool IsManager();
+    bool IsUser();
 }
