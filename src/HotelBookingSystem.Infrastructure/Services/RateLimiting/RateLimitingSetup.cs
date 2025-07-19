@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HotelBookingSystem.Infrastructure.RateLimiting;
+namespace HotelBookingSystem.Infrastructure.Services.RateLimiting;
 
 public static class RateLimitingSetup
 {

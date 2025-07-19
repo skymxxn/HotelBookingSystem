@@ -10,4 +10,4 @@ public sealed record RegisterCommand(
     string Password,
     string PhoneNumber,
     string RoleId
-    ) : IRequest<Result<Guid>>;
+    ) : IRequest<Result<string>>;

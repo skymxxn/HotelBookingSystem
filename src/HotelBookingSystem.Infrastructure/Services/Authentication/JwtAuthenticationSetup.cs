@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace HotelBookingSystem.Infrastructure.Authentication;
+namespace HotelBookingSystem.Infrastructure.Services.Authentication;
 
 public static class JwtAuthenticationSetup
 {

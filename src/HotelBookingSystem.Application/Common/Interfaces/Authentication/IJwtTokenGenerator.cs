@@ -3,4 +3,5 @@
 public interface IJwtTokenGenerator
 {
     string GenerateToken(Guid userId, string email, IEnumerable<string> roles);
+    string GenerateEmailVerificationToken(Guid userId);
 }

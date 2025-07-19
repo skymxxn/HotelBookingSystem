@@ -1,10 +1,11 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace HotelBookingSystem.Infrastructure.Authentication;
+namespace HotelBookingSystem.Infrastructure.Services.Authentication;
 
 public class JwtTokenGenerator : IJwtTokenGenerator
 {
@@ -26,7 +27,7 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         
         claims.AddRange(roles.Select(role => new Claim("role", role)));
         
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
         var tokenDescriptor = new JwtSecurityToken(
@@ -38,5 +39,26 @@ public class JwtTokenGenerator : IJwtTokenGenerator
         );
         
         return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+    }
+    
+    public string GenerateEmailVerificationToken(Guid userId)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+        
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:EmailVerificationTokenKey"]!));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_configuration["JwtSettings:EmailVerificationTokenLifeTimeMinutes"]));
+        var token = new JwtSecurityToken(
+            issuer: _configuration["JwtSettings:Issuer"],
+            audience: _configuration["JwtSettings:Audience"],
+            claims: claims,
+            expires: expires,
+            signingCredentials: creds
+        );
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

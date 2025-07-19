@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using FluentValidation;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Email;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Domain.Entities;
 using MediatR;
@@ -9,22 +10,26 @@ using Microsoft.Extensions.Logging;
 
 namespace HotelBookingSystem.Application.Features.Authentication.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Guid>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<string>>
 {
     private readonly IHotelBookingDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IValidator<RegisterCommand> _validator;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IEmailService _emailService;
     private readonly ILogger<RegisterCommandHandler> _logger;
     
-    public RegisterCommandHandler(IHotelBookingDbContext context, IPasswordHasher passwordHasher, IValidator<RegisterCommand> validator, ILogger<RegisterCommandHandler> logger)
+    public RegisterCommandHandler(IHotelBookingDbContext context, IPasswordHasher passwordHasher, IValidator<RegisterCommand> validator, ILogger<RegisterCommandHandler> logger, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService)
     {
         _context = context;
         _passwordHasher = passwordHasher;
         _validator = validator;
         _logger = logger;
+        _jwtTokenGenerator = jwtTokenGenerator;
+        _emailService = emailService;
     }
     
-    public async Task<Result<Guid>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         
@@ -74,6 +79,9 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<Gu
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
         
-        return Result.Ok(user.Id);
+        var confirmationToken = _jwtTokenGenerator.GenerateEmailVerificationToken(user.Id);
+        await _emailService.SendEmailConfirmationAsync(request.Email, confirmationToken);
+
+        return Result.Ok("Registration successful. Email verification sent.");
     }
 }

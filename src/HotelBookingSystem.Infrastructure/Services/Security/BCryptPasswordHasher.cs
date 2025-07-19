@@ -1,7 +1,6 @@
-﻿using HotelBookingSystem.Application.Common.Interfaces;
-using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+﻿using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 
-namespace HotelBookingSystem.Infrastructure.Security;
+namespace HotelBookingSystem.Infrastructure.Services.Security;
 
 public class BCryptPasswordHasher : IPasswordHasher
 {

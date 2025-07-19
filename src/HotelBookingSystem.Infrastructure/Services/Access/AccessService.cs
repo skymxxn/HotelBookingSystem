@@ -2,7 +2,7 @@ using HotelBookingSystem.Application.Common.Interfaces.Access;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Domain.Entities;
 
-namespace HotelBookingSystem.Infrastructure.Access;
+namespace HotelBookingSystem.Infrastructure.Services.Access;
 
 public class AccessService : IAccessService
 {

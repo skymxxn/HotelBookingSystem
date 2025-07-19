@@ -1,10 +1,9 @@
 ﻿using System.Security.Cryptography;
-using HotelBookingSystem.Application.Common.Interfaces;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using HotelBookingSystem.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 
-namespace HotelBookingSystem.Infrastructure.Authentication;
+namespace HotelBookingSystem.Infrastructure.Services.Authentication;
 
 public class RefreshTokenGenerator : IRefreshTokenGenerator
 {

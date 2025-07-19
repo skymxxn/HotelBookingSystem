@@ -2,7 +2,7 @@
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using Microsoft.AspNetCore.Http;
 
-namespace HotelBookingSystem.Infrastructure.Users;
+namespace HotelBookingSystem.Infrastructure.Services.Users;
 
 public class CurrentUserService : ICurrentUserService
 {

@@ -2,6 +2,7 @@
 using HotelBookingSystem.Application.Features.Authentication.Commands.Logout;
 using HotelBookingSystem.Application.Features.Authentication.Commands.RefreshToken;
 using HotelBookingSystem.Application.Features.Authentication.Commands.Register;
+using HotelBookingSystem.Application.Features.Authentication.Commands.VerifyEmail;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -29,6 +30,17 @@ public class AuthController : ControllerBase
             return BadRequest(result.Errors);
         
         return Ok(result.Value);
+    }
+    
+    [HttpGet("verify-email")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+    {
+        var result = await _mediator.Send(new VerifyEmailCommand(token));
+        
+        if (result.IsFailed)
+            return BadRequest(result.Errors);
+
+        return Ok("Email successfully verified.");
     }
     
     [HttpPost("login")]
