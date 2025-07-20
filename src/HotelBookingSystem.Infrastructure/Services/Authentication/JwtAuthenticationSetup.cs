@@ -12,7 +12,7 @@ public static class JwtAuthenticationSetup
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings");
+        var jwtSettings = configuration.GetSection("JwtOptions:AccessToken");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? string.Empty);
         
         services

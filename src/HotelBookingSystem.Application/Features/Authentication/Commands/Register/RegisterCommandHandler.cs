@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace HotelBookingSystem.Application.Features.Authentication.Commands.Register;
 
-public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<string>>
+public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
 {
     private readonly IHotelBookingDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
@@ -29,7 +29,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
         _emailService = emailService;
     }
     
-    public async Task<Result<string>> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         
@@ -82,6 +82,6 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result<st
         var confirmationToken = _jwtTokenGenerator.GenerateEmailVerificationToken(user.Id);
         await _emailService.SendEmailConfirmationAsync(request.Email, confirmationToken);
 
-        return Result.Ok("Registration successful. Email verification sent.");
+        return Result.Ok();
     }
 }

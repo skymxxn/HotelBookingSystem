@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         if (result.IsFailed)
             return BadRequest(result.Errors);
         
-        return Ok(result.Value);
+        return Ok("User successfully registered. Email verification sent.");
     }
     
     [HttpGet("verify-email")]

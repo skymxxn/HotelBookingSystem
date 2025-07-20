@@ -61,7 +61,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
             return Result.Fail("Your email is not confirmed. Email verification sent.");
         }
         
-        var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
+        var accessToken = _jwtTokenGenerator.GenerateAccessToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
         var refreshToken = _refreshTokenGenerator.GenerateToken(user.Id);
         
         user.RefreshTokens.Add(refreshToken);
