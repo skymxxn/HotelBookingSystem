@@ -25,7 +25,7 @@ public class VerifyEmailCommandHandler : IRequestHandler<VerifyEmailCommand, Res
         var userId = _jwtTokenValidator.ValidateEmailVerificationToken(request.Token);
         if (userId == null)
         {
-            _logger.LogError("Invalid token for email verification");
+            _logger.LogError("Invalid token for email verification {UserId}", userId);
             return Result.Fail("Invalid or expired token");
         }
 
