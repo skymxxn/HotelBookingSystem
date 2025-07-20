@@ -1,4 +1,5 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces.Email;
+using HotelBookingSystem.Infrastructure.Options;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;

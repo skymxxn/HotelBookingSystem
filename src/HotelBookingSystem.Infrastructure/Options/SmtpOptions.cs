@@ -1,4 +1,4 @@
-﻿namespace HotelBookingSystem.Infrastructure.Services.Email;
+﻿namespace HotelBookingSystem.Infrastructure.Options;
 
 public class SmtpOptions
 {

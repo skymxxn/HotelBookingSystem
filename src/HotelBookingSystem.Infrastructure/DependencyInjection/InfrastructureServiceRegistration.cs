@@ -2,6 +2,7 @@
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
 using HotelBookingSystem.Application.Common.Interfaces.Email;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
+using HotelBookingSystem.Infrastructure.Options;
 using HotelBookingSystem.Infrastructure.Services.Access;
 using HotelBookingSystem.Infrastructure.Services.Authentication;
 using HotelBookingSystem.Infrastructure.Services.Email;
@@ -30,6 +31,7 @@ public static class InfrastructureServiceRegistration
         services.AddRateLimiting();
         
         services.Configure<SmtpOptions>(configuration.GetSection("SmtpOptions"));
+        services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
         services.AddTransient<IEmailService, EmailService>();
 
         return services;

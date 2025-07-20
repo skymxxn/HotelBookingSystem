@@ -1,50 +1,42 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 
 namespace HotelBookingSystem.Infrastructure.Services.Authentication;
 
 public class JwtTokenValidator  : IJwtTokenValidator
 {
-    private readonly IConfiguration _configuration;
+    private readonly JwtOptions _jwtOptions;
     private readonly ILogger<JwtTokenValidator> _logger;
 
-    public JwtTokenValidator(IConfiguration configuration, ILogger<JwtTokenValidator> logger)
+    public JwtTokenValidator(ILogger<JwtTokenValidator> logger, IOptions<JwtOptions> jwtOptions)
     {
-        _configuration = configuration;
         _logger = logger;
+        _jwtOptions = jwtOptions.Value;
     }
 
     public Guid? ValidateEmailVerificationToken(string token)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_configuration["JWTSettings:EmailVerificationTokenKey"]!);
-
         try
         {
-            var parameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = true,
-                ValidIssuer = _configuration["JwtSettings:Issuer"],
-                ValidateAudience = true,
-                ValidAudience = _configuration["JwtSettings:Audience"],
-                ClockSkew = TimeSpan.Zero
-            };
-
-            var principal = tokenHandler.ValidateToken(token, parameters, out _);
-            var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier);
-
-            return userIdClaim is not null ? Guid.Parse(userIdClaim.Value) : null;
+            var principal = JwtHelper.ValidateToken(
+                token,
+                _jwtOptions.EmailVerification.Key,
+                _jwtOptions.EmailVerification.Issuer,
+                _jwtOptions.EmailVerification.Audience,
+                out _
+            );
+            
+            var subClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
+            return subClaim is not null ? Guid.Parse(subClaim.Value) : null;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
+            _logger.LogError(ex, "Email token validation failed: {Message}", ex.Message);
             return null;
         }
     }

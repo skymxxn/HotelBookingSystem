@@ -12,8 +12,8 @@ public static class JwtAuthenticationSetup
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services,
         IConfiguration configuration)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? string.Empty);
+        var jwtSection = configuration.GetSection("JwtOptions:AccessToken");
+        var key = Encoding.UTF8.GetBytes(jwtSection["Key"] ?? string.Empty);
         
         services
             .AddAuthentication(options =>
@@ -33,10 +33,10 @@ public static class JwtAuthenticationSetup
                     IssuerSigningKey = new SymmetricSecurityKey(key),
         
                     ValidateIssuer = true,
-                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidIssuer = jwtSection["Issuer"],
         
                     ValidateAudience = true,
-                    ValidAudience = jwtSettings["Audience"],
+                    ValidAudience = jwtSection["Audience"],
         
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero 
