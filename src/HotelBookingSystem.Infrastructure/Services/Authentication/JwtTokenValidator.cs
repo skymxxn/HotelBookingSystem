@@ -54,4 +54,11 @@ public class JwtTokenValidator  : IJwtTokenValidator
         var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
         return userIdClaim is not null ? Guid.Parse(userIdClaim.Value) : null;
     }
+    
+    public Guid? ValidatePasswordResetToken(string token)
+    {
+        var principal = ValidateTokenInterval(token, _jwtOptions.PasswordReset);
+        var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
+        return userIdClaim is not null ? Guid.Parse(userIdClaim.Value) : null;
+    }
 }

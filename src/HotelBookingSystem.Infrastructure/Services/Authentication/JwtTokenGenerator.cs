@@ -73,4 +73,20 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             _jwtOptions.EmailVerification.Audience,
             _jwtOptions.EmailVerification.LifetimeMinutes);
     }
+
+    public string GeneratePasswordResetToken(Guid userId)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+        
+        return GenerateTokenInterval(
+            claims,
+            _jwtOptions.PasswordReset.Key,
+            _jwtOptions.PasswordReset.Issuer,
+            _jwtOptions.PasswordReset.Audience,
+            _jwtOptions.PasswordReset.LifetimeMinutes);
+    }
 }

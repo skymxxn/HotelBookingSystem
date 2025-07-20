@@ -40,13 +40,28 @@ public class EmailService  : IEmailService
     public async Task SendEmailConfirmationAsync(string email, string token)
     {
         var link = $"{_options.FrontendUrl}/verify-email?token={token}";
+        var subject = $"Confirm your email";
         var body = $"""
                         <p>Hello!</p>
                         <p>To confirm your email, click the link below:</p>
                         <p><a href="{link}">Confirm Email</a></p>
                     """;
 
-        await SendEmailAsync(email, "Confirm your email", body);
+        await SendEmailAsync(email, subject, body);
         _logger.LogInformation("Confirmation email sent to {Email}", email);
+    }
+    
+    public async Task SendPasswordResetAsync(string email, string token)
+    {
+        var link = $"{_options.FrontendUrl}/reset-password?token={token}";
+        var subject = $"Reset your password";
+        var body = $"""
+                        <p>Hello!</p>
+                        <p>To reset your password, click the link below:</p>
+                        <p><a href="{link}">Reset password</a></p>
+                    """;
+
+        await SendEmailAsync(email, subject, body);
+        _logger.LogInformation("Password reset email sent to {Email}", email);
     }
 }
