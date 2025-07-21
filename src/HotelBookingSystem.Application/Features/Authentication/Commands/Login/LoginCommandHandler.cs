@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using FluentValidation;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Email;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Features.Authentication.DTOs;
 using MediatR;
@@ -14,12 +15,13 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
     private readonly IHotelBookingDbContext _context;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    private readonly IEmailService _emailService;
     private readonly IRefreshTokenGenerator _refreshTokenGenerator;
     private readonly IRefreshTokenCleaner _refreshTokenCleaner;
     private readonly IValidator<LoginCommand> _validator;
     private readonly ILogger<LoginCommandHandler> _logger;
     
-    public LoginCommandHandler(IHotelBookingDbContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IRefreshTokenGenerator refreshTokenGenerator, IRefreshTokenCleaner refreshTokenCleaner, IValidator<LoginCommand> validator, ILogger<LoginCommandHandler> logger)
+    public LoginCommandHandler(IHotelBookingDbContext context, IPasswordHasher passwordHasher, IJwtTokenGenerator jwtTokenGenerator, IRefreshTokenGenerator refreshTokenGenerator, IRefreshTokenCleaner refreshTokenCleaner, IValidator<LoginCommand> validator, ILogger<LoginCommandHandler> logger, IEmailService emailService)
     {
         _context = context;
         _passwordHasher = passwordHasher;
@@ -28,6 +30,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         _refreshTokenCleaner = refreshTokenCleaner;
         _validator = validator;
         _logger = logger;
+        _emailService = emailService;
     }
     
     public async Task<Result<AuthResultDto>> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -49,8 +52,16 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Result<AuthResu
         {
             return Result.Fail("Invalid email or password.");
         }
+
+        if (!user.IsEmailConfirmed)
+        {
+            _logger.LogWarning("User {UserId} email not confirmed", user.Id);
+            var confirmationToken = _jwtTokenGenerator.GenerateEmailVerificationToken(user.Id);
+            await _emailService.SendEmailConfirmationAsync(request.Email, confirmationToken);
+            return Result.Fail("Your email is not confirmed. Email verification sent.");
+        }
         
-        var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
+        var accessToken = _jwtTokenGenerator.GenerateAccessToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
         var refreshToken = _refreshTokenGenerator.GenerateToken(user.Id);
         
         user.RefreshTokens.Add(refreshToken);

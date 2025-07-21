@@ -9,7 +9,7 @@ public class RejectBookingValidator : AbstractValidator<RejectBookingCommand>
         RuleFor(x => x.BookingId)
             .NotEmpty().WithMessage("Booking ID must not be empty.");
 
-        RuleFor(x => x.Reason)
+        RuleFor(x => x.RejectionReason)
             .NotEmpty().WithMessage("Reason for rejection must not be empty.");
     }
 }

@@ -41,7 +41,7 @@ public class DeleteHotelCommandHandler : IRequestHandler<DeleteHotelCommand, Res
             return Result.Fail("Hotel not found.");
         }
         
-        if (hotel.OwnerId != _currentUser.GetUserId())
+        if (hotel.OwnerId != _currentUser.GetUserId() && !_currentUser.IsAdmin())
         {
             _logger.LogWarning("User {UserId} attempted to delete hotel {HotelId} without permission", _currentUser.GetUserId(), request.Id);
             return Result.Fail("You do not have permission to delete this hotel.");

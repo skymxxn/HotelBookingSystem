@@ -72,7 +72,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, R
         
         _refreshTokenCleaner.CleanUp(user);
         
-        var accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
+        var accessToken = _jwtTokenGenerator.GenerateAccessToken(user.Id, user.Email, user.Roles.Select(r => r.Name).ToList());
         
         await _context.SaveChangesAsync(cancellationToken);
         

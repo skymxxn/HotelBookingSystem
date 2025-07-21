@@ -13,7 +13,7 @@ public static class HostExtensions
 
         try
         {
-            dbContext.Database.Migrate();
+            await dbContext.Database.MigrateAsync();
             await DbSeeder.SeedRolesAsync(dbContext);
         }
         catch (Exception ex)

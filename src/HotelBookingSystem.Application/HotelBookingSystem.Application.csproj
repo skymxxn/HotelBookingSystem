@@ -14,7 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Authentication\Commands\" />
     <Folder Include="Features\Moderation\Hotels\" />
     <Folder Include="Features\Moderation\Roles\Queries\" />
   </ItemGroup>
