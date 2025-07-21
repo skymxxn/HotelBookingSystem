@@ -39,7 +39,7 @@ public class EmailService  : IEmailService
 
     public async Task SendEmailConfirmationAsync(string email, string token)
     {
-        var link = $"{_options.FrontendUrl}/verify-email?token={token}";
+        var link = $"{_options.BackendUrl}auth/verify-email?token={token}";
         var subject = $"Confirm your email";
         var body = $"""
                         <p>Hello!</p>
@@ -53,7 +53,7 @@ public class EmailService  : IEmailService
     
     public async Task SendPasswordResetAsync(string email, string token)
     {
-        var link = $"{_options.FrontendUrl}/reset-password?token={token}";
+        var link = $"{_options.BackendUrl}auth/reset-password?token={token}";
         var subject = $"Reset your password";
         var body = $"""
                         <p>Hello!</p>
@@ -63,5 +63,32 @@ public class EmailService  : IEmailService
 
         await SendEmailAsync(email, subject, body);
         _logger.LogInformation("Password reset email sent to {Email}", email);
+    }
+
+    public async Task SendBookingCreatedAsync(string email, string roomName, DateTime startDate, DateTime endDate)
+    {
+        var templatePath = Path.Combine(AppContext.BaseDirectory, "Templates", "Emails",  "BookingCreatedTemplate.html");
+        var template = await File.ReadAllTextAsync(templatePath);
+
+        var body = template
+            .Replace("{RoomName}", roomName)
+            .Replace("{StartDate}", startDate.ToString("yyyy-MM-dd"))
+            .Replace("{EndDate}", endDate.ToString("yyyy-MM-dd"));
+        
+        await SendEmailAsync(email, "BookingCreated", body);
+    }
+    
+    public async Task SendBookingConfirmationAsync(string email, string token)
+    {
+        var link = $"{_options.BackendUrl}bookings/confirm-booking?token={token}";
+        var subject = "Confirm your booking";
+        var body = $"""
+                        <p>Hello!</p>
+                        <p>Please confirm your booking by clicking the link below:</p>
+                        <p><a href="{link}">Confirm Booking</a></p>
+                    """;
+
+        await SendEmailAsync(email, subject, body);
+        _logger.LogInformation("Booking confirmation email sent to {Email}", email);
     }
 }

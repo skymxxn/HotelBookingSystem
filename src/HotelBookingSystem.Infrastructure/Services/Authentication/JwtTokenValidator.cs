@@ -61,4 +61,11 @@ public class JwtTokenValidator  : IJwtTokenValidator
         var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
         return userIdClaim is not null ? Guid.Parse(userIdClaim.Value) : null;
     }
+
+    public Guid? ValidateBookingConfirmationToken(string token)
+    {
+        var principal = ValidateTokenInterval(token, _jwtOptions.BookingConfirmation);
+        var bookingIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
+        return bookingIdClaim is not null ? Guid.Parse(bookingIdClaim.Value) : null;
+    }
 }

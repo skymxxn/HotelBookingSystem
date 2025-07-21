@@ -57,7 +57,7 @@ public class RejectBookingCommandHandler : IRequestHandler<RejectBookingCommand,
             return Result.Fail($"You do not have permission to reject this booking.");
         }
         
-        if (booking.Status != BookingStatus.Pending)
+        if (booking.Status != BookingStatus.AwaitingManagerConfirmation)
         {
             _logger.LogWarning("Booking with ID {BookingId} is not in a pending state.", request.BookingId);
             return Result.Fail($"Booking with ID {request.BookingId} is not in a pending state.");

@@ -89,4 +89,20 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             _jwtOptions.PasswordReset.Audience,
             _jwtOptions.PasswordReset.LifetimeMinutes);
     }
+
+    public string GenerateBookingConfirmationToken(Guid bookingId)
+    {
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, bookingId.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        return GenerateTokenInterval(
+            claims,
+            _jwtOptions.BookingConfirmation.Key,
+            _jwtOptions.BookingConfirmation.Issuer,
+            _jwtOptions.BookingConfirmation.Audience,
+            _jwtOptions.BookingConfirmation.LifetimeMinutes);
+    }
 }
