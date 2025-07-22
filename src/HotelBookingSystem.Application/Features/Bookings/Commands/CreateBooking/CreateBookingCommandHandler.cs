@@ -90,7 +90,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         _logger.LogInformation("Booking created successfully with ID {BookingId} by user {UserId} for Room ID {RoomId}.", booking.Id, userId, request.RoomId);
 
         var token = _jwtTokenGenerator.GenerateBookingConfirmationToken(booking.Id);
-        await _emailService.SendBookingConfirmationAsync(userEmail, token);
+        await _emailService.SendBookingConfirmationAsync(userEmail, room.Name, booking.FromDate, booking.ToDate, token);
         
         var response = booking.Adapt<CreateBookingResponse>();
         

@@ -51,7 +51,7 @@ public class BookingsController : ControllerBase
         return CreatedAtAction(nameof(GetBooking), new { id = result.Value.Id }, result.Value);
     }
 
-    [HttpPost("confirm-booking")]
+    [HttpGet("confirm-booking")]
     public async Task<IActionResult> ConfirmBooking([FromQuery] ConfirmBookingCommand command)
     {
         var result = await _mediator.Send(command);
