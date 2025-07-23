@@ -1,4 +1,5 @@
 using HotelBookingSystem.Application.Features.Bookings.Commands.CancelBooking;
+using HotelBookingSystem.Application.Features.Bookings.Commands.ConfirmBooking;
 using HotelBookingSystem.Application.Features.Bookings.Commands.CreateBooking;
 using HotelBookingSystem.Application.Features.Bookings.Queries.GetBooking;
 using HotelBookingSystem.Application.Features.Bookings.Queries.GetBookings;
@@ -48,6 +49,17 @@ public class BookingsController : ControllerBase
             return BadRequest(result.Errors);
         
         return CreatedAtAction(nameof(GetBooking), new { id = result.Value.Id }, result.Value);
+    }
+
+    [HttpGet("confirm-booking")]
+    public async Task<IActionResult> ConfirmBooking([FromQuery] ConfirmBookingCommand command)
+    {
+        var result = await _mediator.Send(command);
+        
+        if (result.IsFailed)
+            return BadRequest(result.Errors);
+        
+        return Ok("Booking confirmed.");
     }
     
     [HttpPost("{id:guid}/cancel")]

@@ -2,8 +2,9 @@ namespace HotelBookingSystem.Domain.Enums;
 
 public enum BookingStatus
 {
-    Pending,
-    Confirmed,
+    AwaitingUserConfirmation,
+    AwaitingManagerConfirmation,
+    ConfirmedByManager,
     Cancelled,
     Rejected
 }

@@ -51,21 +51,21 @@ public class ConfirmBookingCommandHandler : IRequestHandler<ConfirmBookingComman
             return Result.Fail($"Booking with ID {request.BookingId} not found.");
         }
         
-        if (booking.Status != BookingStatus.Pending)
+        if (booking.Status != BookingStatus.AwaitingManagerConfirmation)
         {
             _logger.LogWarning("Booking with ID {BookingId} is not in a pending state.", request.BookingId);
             return Result.Fail($"Booking with ID {request.BookingId} is not in a pending state.");
         }
         
         var confirmationTime = DateTime.UtcNow;
-        booking.Status = BookingStatus.Confirmed;
+        booking.Status = BookingStatus.ConfirmedByManager;
         booking.ConfirmedAt = confirmationTime;
         
         await _context.SaveChangesAsync(cancellationToken);
 
         var result = booking.Adapt<ConfirmBookingResponse>();
         
-        _logger.LogInformation("Booking with ID {BookingId} has been confirmed by user {UserId}.", request.BookingId, managerId);
+        _logger.LogInformation("Booking with ID {BookingId} has been confirmed by manager {ManagerId}.", request.BookingId, managerId);
         
         return Result.Ok(result);
     }

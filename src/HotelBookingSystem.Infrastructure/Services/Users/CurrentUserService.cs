@@ -42,6 +42,18 @@ public class CurrentUserService : ICurrentUserService
 
         return roles;
     }
+
+    public string GetUserEmail()
+    {
+        var userEmail = User?.FindFirst(ClaimTypes.Email)?.Value;
+        
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            throw new InvalidOperationException("User email is not available.");
+        }
+        
+        return userEmail;
+    }
     
     public bool IsAdmin() => User?.IsInRole("Admin") ?? false;
     

@@ -53,12 +53,6 @@ public class CancelBookingCommandHandler : IRequestHandler<CancelBookingCommand,
             return Result.Ok(booking.Adapt<CancelBookingResponse>());
         }
         
-        if (booking.Status != BookingStatus.Pending && booking.Status != BookingStatus.Confirmed)
-        {
-            _logger.LogWarning("Booking with ID {BookingId} cannot be cancelled in current status {Status}.", request.BookingId, booking.Status);
-            return Result.Fail($"Booking cannot be cancelled at this stage.");
-        }
-        
         booking.Status = BookingStatus.Cancelled;
         booking.CancelledAt = DateTime.UtcNow;
         booking.CancellationReason = request.Reason;

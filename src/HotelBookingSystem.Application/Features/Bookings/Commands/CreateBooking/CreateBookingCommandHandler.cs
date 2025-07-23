@@ -1,6 +1,8 @@
 using FluentResults;
 using FluentValidation;
 using HotelBookingSystem.Application.Common.DTOs.Bookings;
+using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Email;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Domain.Entities;
@@ -16,15 +18,19 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
 {
     private readonly IHotelBookingDbContext _context;
     private readonly ICurrentUserService _currentUser;
+    private readonly IEmailService _emailService;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IValidator<CreateBookingCommand> _bookingValidator;
     private readonly ILogger<CreateBookingCommandHandler> _logger;
 
-    public CreateBookingCommandHandler(IHotelBookingDbContext context, ICurrentUserService currentUser, IValidator<CreateBookingCommand> bookingValidator, ILogger<CreateBookingCommandHandler> logger)
+    public CreateBookingCommandHandler(IHotelBookingDbContext context, ICurrentUserService currentUser, IValidator<CreateBookingCommand> bookingValidator, ILogger<CreateBookingCommandHandler> logger, IEmailService emailService, IJwtTokenGenerator jwtTokenGenerator)
     {
         _context = context;
         _currentUser = currentUser;
         _bookingValidator = bookingValidator;
         _logger = logger;
+        _emailService = emailService;
+        _jwtTokenGenerator = jwtTokenGenerator;
     }
 
     public async Task<Result<CreateBookingResponse>> Handle(CreateBookingCommand request, CancellationToken cancellationToken)
@@ -38,6 +44,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         }
         
         var userId = _currentUser.GetUserId();
+        var userEmail = _currentUser.GetUserEmail();
         
         var room = await _context.Rooms
             .Include(r => r.Hotel)
@@ -72,7 +79,7 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
             FromDate = request.FromDate,
             ToDate = request.ToDate,
             Description = request.Description,
-            Status = BookingStatus.Pending,
+            Status = BookingStatus.AwaitingUserConfirmation,
             TotalPrice = room.PricePerNight * (decimal)totalDays,
             CreatedAt = DateTime.UtcNow
         };
@@ -81,6 +88,9 @@ public class CreateBookingCommandHandler : IRequestHandler<CreateBookingCommand,
         await _context.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("Booking created successfully with ID {BookingId} by user {UserId} for Room ID {RoomId}.", booking.Id, userId, request.RoomId);
+
+        var token = _jwtTokenGenerator.GenerateBookingConfirmationToken(booking.Id);
+        await _emailService.SendBookingConfirmationAsync(userEmail, room.Name, booking.FromDate, booking.ToDate, token);
         
         var response = booking.Adapt<CreateBookingResponse>();
         
