@@ -1,10 +1,12 @@
 ﻿using HotelBookingSystem.Application.Common.Interfaces.Access;
 using HotelBookingSystem.Application.Common.Interfaces.Authentication;
+using HotelBookingSystem.Application.Common.Interfaces.Cache;
 using HotelBookingSystem.Application.Common.Interfaces.Email;
 using HotelBookingSystem.Application.Common.Interfaces.Users;
 using HotelBookingSystem.Infrastructure.Options;
 using HotelBookingSystem.Infrastructure.Services.Access;
 using HotelBookingSystem.Infrastructure.Services.Authentication;
+using HotelBookingSystem.Infrastructure.Services.Cache;
 using HotelBookingSystem.Infrastructure.Services.Email;
 using HotelBookingSystem.Infrastructure.Services.RateLimiting;
 using HotelBookingSystem.Infrastructure.Services.Security;
@@ -33,6 +35,9 @@ public static class InfrastructureServiceRegistration
         services.Configure<SmtpOptions>(configuration.GetSection("SmtpOptions"));
         services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
         services.AddTransient<IEmailService, EmailService>();
+
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, CacheService>();
 
         return services;
     }

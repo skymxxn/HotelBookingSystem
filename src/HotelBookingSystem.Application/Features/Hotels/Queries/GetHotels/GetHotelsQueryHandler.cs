@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using HotelBookingSystem.Application.Common.DTOs.Hotels;
 using HotelBookingSystem.Application.Common.Interfaces.Access;
+using HotelBookingSystem.Application.Common.Interfaces.Cache;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using Mapster;
 using MediatR;
@@ -12,15 +13,24 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
 {
     private readonly IHotelBookingDbContext _context;
     private readonly IAccessService _accessService;
-    
-    public GetHotelsQueryHandler(IHotelBookingDbContext context, IAccessService accessService)
+    private readonly ICacheService _cacheService;
+
+    public GetHotelsQueryHandler(IHotelBookingDbContext context, IAccessService accessService, ICacheService cacheService)
     {
         _context = context;
         _accessService = accessService;
+        _cacheService = cacheService;
     }
     
     public async Task<Result<List<HotelResponse>>> Handle(GetHotelsQuery request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"GetHotels_{request.Name}_{request.Address}_{request.IsApproved}_{request.IsPublished}_{request.CreatedAt}_{request.UpdatedAt}_{request.OwnerId}_{request.Page}_{request.PageSize}_{request.SortBy}_{request.SortOrder}";
+
+        var cached = await _cacheService.GetAsync<List<HotelResponse>>(cacheKey);
+
+        if (cached is not null)
+            return Result.Ok(cached);
+        
         var query = _context.Hotels.AsQueryable();
 
         query = _accessService.ApplyHotelAccessFilter(query);
@@ -69,6 +79,8 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
         var hotels = await query
             .ProjectToType<HotelResponse>()
             .ToListAsync(cancellationToken);
+
+        await _cacheService.SetAsync(cacheKey, hotels, TimeSpan.FromMinutes(5));
 
         return Result.Ok(hotels);
     }
