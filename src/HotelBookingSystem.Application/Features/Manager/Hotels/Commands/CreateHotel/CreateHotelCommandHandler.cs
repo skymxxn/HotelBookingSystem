@@ -46,7 +46,7 @@ public class CreateHotelCommandHandler : IRequestHandler<CreateHotelCommand, Res
         _context.Hotels.Add(hotel);
         await _context.SaveChangesAsync(cancellationToken);
         
-        _logger.LogInformation("Hotel with ID {HotelId} created by user {UserId}", hotel.Id, _currentUser.GetUserId());
+        _logger.LogInformation("Hotel with ID {HotelId} created by user {UserId} with roles: {Roles}", hotel.Id, _currentUser.GetUserId(), _currentUser.GetRoles());
         
         return Result.Ok(hotel.Id);
     }

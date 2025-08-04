@@ -4,9 +4,11 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNetEnv" Version="3.1.1" />
         <PackageReference Include="Mapster" Version="7.4.2-pre02" />
         <PackageReference Include="MediatR" Version="12.5.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11">
@@ -23,6 +25,12 @@
       <ProjectReference Include="..\HotelBookingSystem.Domain\HotelBookingSystem.Domain.csproj" />
       <ProjectReference Include="..\HotelBookingSystem.Infrastructure\HotelBookingSystem.Infrastructure.csproj" />
       <ProjectReference Include="..\HotelBookingSystem.Persistence\HotelBookingSystem.Persistence.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

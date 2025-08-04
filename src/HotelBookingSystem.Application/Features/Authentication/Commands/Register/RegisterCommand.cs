@@ -9,5 +9,5 @@ public sealed record RegisterCommand(
     string Email,
     string Password,
     string PhoneNumber,
-    string RoleId
+    string? RoleId
     ) : IRequest<Result>;
