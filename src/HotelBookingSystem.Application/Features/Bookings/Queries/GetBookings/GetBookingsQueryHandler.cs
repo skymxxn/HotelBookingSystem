@@ -1,6 +1,7 @@
 using FluentResults;
 using HotelBookingSystem.Application.Common.DTOs.Bookings;
 using HotelBookingSystem.Application.Common.Interfaces.Access;
+using HotelBookingSystem.Application.Common.Interfaces.Cache;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
 using Mapster;
 using MediatR;
@@ -12,15 +13,24 @@ public class GetBookingsQueryHandler : IRequestHandler<GetBookingsQuery, Result<
 {
     private readonly IHotelBookingDbContext _context;
     private readonly IAccessService _accessService;
+    private readonly ICacheService _cacheService;
 
-    public GetBookingsQueryHandler(IHotelBookingDbContext context, IAccessService accessService)
+    public GetBookingsQueryHandler(IHotelBookingDbContext context, IAccessService accessService, ICacheService cacheService)
     {
         _context = context;
         _accessService = accessService;
+        _cacheService = cacheService;
     }
 
     public async Task<Result<List<BookingResponse>>> Handle(GetBookingsQuery request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"GetBookings_{request.RoomId}_{request.HotelId}_{request.UserId}_{request.MinTotalPrice}_{request.MaxTotalPrice}_{request.Status}_{request.FromDate}_{request.ToDate}_{request.Page}_{request.PageSize}_{request.SortBy}_{request.SortOrder}";
+
+        var cached = await _cacheService.GetAsync<List<BookingResponse>>(cacheKey);
+        
+        if (cached is not null)
+            return Result.Ok(cached);
+
         var query = _context.Bookings
             .Include(b => b.Room)
             .ThenInclude(r => r.Hotel)

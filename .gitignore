@@ -28,7 +28,6 @@ log/
 *.key
 secrets/
 .env
-.env.*
 
 # === App Settings ===
 appsettings.Development.json

@@ -18,8 +18,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
     private readonly IEmailService _emailService;
     private readonly ILogger<RegisterCommandHandler> _logger;
-    
-    public RegisterCommandHandler(IHotelBookingDbContext context, IPasswordHasher passwordHasher, IValidator<RegisterCommand> validator, ILogger<RegisterCommandHandler> logger, IJwtTokenGenerator jwtTokenGenerator, IEmailService emailService)
+
+    public RegisterCommandHandler(
+        IHotelBookingDbContext context,
+        IPasswordHasher passwordHasher,
+        IValidator<RegisterCommand> validator,
+        ILogger<RegisterCommandHandler> logger,
+        IJwtTokenGenerator jwtTokenGenerator,
+        IEmailService emailService)
     {
         _context = context;
         _passwordHasher = passwordHasher;
@@ -28,11 +34,11 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
         _jwtTokenGenerator = jwtTokenGenerator;
         _emailService = emailService;
     }
-    
+
     public async Task<Result> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
-        
+
         if (!validationResult.IsValid)
         {
             _logger.LogWarning("Validation failed for RegisterCommand: {Errors}", validationResult.Errors);
@@ -44,26 +50,14 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             _logger.LogWarning("Email {Email} is already taken", request.Email);
             return Result.Fail("Email is already taken.");
         }
-        
-        if (!Guid.TryParse(request.RoleId, out var roleGuid))
+
+        var roleResult = await GetRoleAsync(request.RoleId, cancellationToken);
+        if (roleResult.IsFailed)
         {
-            _logger.LogWarning("Invalid RoleId format: {RoleId}", request.RoleId);
-            return Result.Fail("Role not found.");
+            return roleResult.ToResult();
         }
-        
-        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleGuid, cancellationToken);
-        
-        if (role == null)
-        {
-            _logger.LogWarning("Role with ID {RoleId} not found", request.RoleId);
-            return Result.Fail("Role not found.");
-        }
-        
-        if (role.Name != "User" && role.Name != "Manager")
-        {
-            _logger.LogWarning("Invalid role {RoleName} for registration", role.Name);
-            return Result.Fail("Invalid role for registration.");
-        }
+
+        var role = roleResult.Value;
 
         var user = new User
         {
@@ -75,13 +69,54 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Result>
             CreatedAt = DateTime.UtcNow,
             Roles = new List<Role> { role }
         };
-        
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
-        
+
         var confirmationToken = _jwtTokenGenerator.GenerateEmailVerificationToken(user.Id);
         await _emailService.SendEmailConfirmationAsync(request.Email, confirmationToken);
 
         return Result.Ok();
+    }
+
+    private async Task<Result<Role>> GetRoleAsync(string? roleId, CancellationToken cancellationToken)
+    {
+        Role? role;
+
+        if (string.IsNullOrWhiteSpace(roleId))
+        {
+            role = await _context.Roles
+                .FirstOrDefaultAsync(r => r.Name == "User", cancellationToken);
+
+            if (role is null)
+            {
+                _logger.LogWarning("Default role 'User' not found.");
+                return Result.Fail("Default role not found.");
+            }
+        }
+        else
+        {
+            if (!Guid.TryParse(roleId, out var roleGuid))
+            {
+                _logger.LogWarning("Invalid RoleId format: {RoleId}", roleId);
+                return Result.Fail("Invalid RoleId format.");
+            }
+
+            role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleGuid, cancellationToken);
+
+            if (role is null)
+            {
+                _logger.LogWarning("Role with ID {RoleId} not found", roleId);
+                return Result.Fail("Role not found.");
+            }
+        }
+
+        if (role.Name != "User" && role.Name != "Manager")
+        {
+            _logger.LogWarning("Invalid role {RoleName} for registration", role.Name);
+            return Result.Fail("Invalid role for registration.");
+        }
+
+        return Result.Ok(role);
     }
 }

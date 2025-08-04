@@ -1,14 +1,12 @@
+using System;
 using FluentValidation;
 
-namespace HotelBookingSystem.Application.Features.Bookings.Commands.CreateBooking;
+namespace HotelBookingSystem.Application.Features.Bookings.Commands.UpdateBooking;
 
-public class CreateBookingValidator : AbstractValidator<CreateBookingCommand>
+public class UpdateBookingValidator : AbstractValidator<UpdateBookingCommand>
 {
-    public CreateBookingValidator()
+    public UpdateBookingValidator()
     {
-        RuleFor(x => x.RoomId)
-            .NotEmpty().WithMessage("Room ID is required.");
-
         RuleFor(x => x.FromDate)
             .NotEmpty().WithMessage("From date is required.")
             .LessThanOrEqualTo(x => x.ToDate).WithMessage("From date must be before or equal to To date.")

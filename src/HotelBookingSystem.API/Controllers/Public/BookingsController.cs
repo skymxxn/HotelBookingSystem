@@ -1,6 +1,7 @@
 using HotelBookingSystem.Application.Features.Bookings.Commands.CancelBooking;
 using HotelBookingSystem.Application.Features.Bookings.Commands.ConfirmBooking;
 using HotelBookingSystem.Application.Features.Bookings.Commands.CreateBooking;
+using HotelBookingSystem.Application.Features.Bookings.Commands.UpdateBooking;
 using HotelBookingSystem.Application.Features.Bookings.Queries.GetBooking;
 using HotelBookingSystem.Application.Features.Bookings.Queries.GetBookings;
 using MediatR;
@@ -50,6 +51,19 @@ public class BookingsController : ControllerBase
         
         return CreatedAtAction(nameof(GetBooking), new { id = result.Value.Id }, result.Value);
     }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateBooking(Guid id, [FromBody] UpdateBookingCommand request)
+    {
+        var command = request with { BookingId = id };
+        var result = await _mediator.Send(command);
+        
+        if (result.IsFailed)
+            return BadRequest(result.Errors);
+        
+        return NoContent();
+    }
+    
 
     [HttpGet("confirm-booking")]
     public async Task<IActionResult> ConfirmBooking([FromQuery] ConfirmBookingCommand command)

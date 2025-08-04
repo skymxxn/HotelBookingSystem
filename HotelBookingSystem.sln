@@ -1,10 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-#
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{68461E46-A56D-4D41-8956-46532B913E1A}"
-	ProjectSection(SolutionItems) = preProject
-		src\appsettings.Development.json = src\appsettings.Development.json
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingSystem.API", "src\HotelBookingSystem.API\HotelBookingSystem.API.csproj", "{1E76AB4B-0411-4998-A0CE-F92DE16558A2}"
 EndProject
@@ -15,6 +11,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingSystem.Infrastructure", "src\HotelBookingSystem.Infrastructure\HotelBookingSystem.Infrastructure.csproj", "{81C87F28-34CD-4A79-8BDC-02D8F7BE51A2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelBookingSystem.Persistence", "src\HotelBookingSystem.Persistence\HotelBookingSystem.Persistence.csproj", "{B455FA85-658D-400C-AB56-9502E762F8A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6BFC6FBA-0434-47BF-A2D3-E35D7007A408}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+		.env = .env
+		.gitignore = .gitignore
+		.env.template = .env.template
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +46,9 @@ Global
 		{B455FA85-658D-400C-AB56-9502E762F8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B455FA85-658D-400C-AB56-9502E762F8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B455FA85-658D-400C-AB56-9502E762F8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1E76AB4B-0411-4998-A0CE-F92DE16558A2} = {68461E46-A56D-4D41-8956-46532B913E1A}

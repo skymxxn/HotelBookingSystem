@@ -10,11 +10,13 @@ public static class HostExtensions
     {
         using var scope = host.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<HotelBookingDbContext>();
+        var services = scope.ServiceProvider;
 
         try
         {
             await dbContext.Database.MigrateAsync();
             await DbSeeder.SeedRolesAsync(dbContext);
+            await DbSeeder.SeedAdminUserAsync(services);
         }
         catch (Exception ex)
         {

@@ -13,7 +13,7 @@ public class LoginCommandValidator : AbstractValidator<LoginCommand>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required.")
-            .MinimumLength(8).WithMessage("Password must be at least 8 characters long.");
+            .MaximumLength(256).WithMessage("Password must not exceed 256 characters.");
     }
     
 }
