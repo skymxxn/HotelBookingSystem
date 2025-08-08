@@ -54,6 +54,8 @@ public class CurrentUserService : ICurrentUserService
         
         return userEmail;
     }
+
+    public bool IsAuthenticated() => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
     
     public bool IsAdmin() => User?.IsInRole("Admin") ?? false;
     

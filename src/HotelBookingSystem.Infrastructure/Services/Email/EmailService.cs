@@ -39,7 +39,7 @@ public class EmailService  : IEmailService
 
     public async Task SendEmailConfirmationAsync(string email, string token)
     {
-        var link = $"{_options.BackendUrl}auth/verify-email?token={token}";
+        var link = $"{_options.FrontendUrl}auth/verify-email?token={token}";
         var subject = "Confirm your email";
 
         var templatePath = Path.Combine(AppContext.BaseDirectory, "Services", "Email", "Templates", "Emails", "EmailConfirmationTemplate.html");
@@ -52,7 +52,7 @@ public class EmailService  : IEmailService
     
     public async Task SendPasswordResetAsync(string email, string token)
     {
-        var link = $"{_options.BackendUrl}auth/reset-password?token={token}";
+        var link = $"{_options.FrontendUrl}auth/reset-password?token={token}";
         var subject = "Reset your password";
 
         var templatePath = Path.Combine(AppContext.BaseDirectory, "Services", "Email", "Templates", "Emails", "PasswordResetTemplate.html");
@@ -65,7 +65,7 @@ public class EmailService  : IEmailService
     
     public async Task SendBookingConfirmationAsync(string email, string roomName, DateTime startDate, DateTime endDate, string token)
     {
-        var link = $"{_options.BackendUrl}bookings/confirm-booking?token={token}";
+        var link = $"{_options.FrontendUrl}bookings/confirm-booking?token={token}";
         var subject = "Confirm your booking";
 
         var templatePath = Path.Combine(AppContext.BaseDirectory, "Services", "Email", "Templates", "Emails", "BookingConfirmationTemplate.html");

@@ -12,7 +12,10 @@
       - JwtOptions__EmailVerification__Key=${JWT_EMAIL_VERIFICATION_KEY}
       - JwtOptions__PasswordReset__Key=${JWT_PASSWORD_RESET_KEY}
       - JwtOptions__BookingConfirmation__Key=${JWT_BOOKING_CONFIRMATION_KEY}
+      - SmtpOptions__Username=${SMTP_USERNAME}
+      - SmtpOptions__SenderEmail=${SMTP_SENDEREMAIL}
       - SmtpOptions__Password=${SMTP_PASSWORD}
+      - SmtpOptions__FrontendUrl=${SMTP_FRONTEND_URL}
       - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
     depends_on:
@@ -25,6 +28,7 @@
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: HotelDb
     volumes:
       - db_data:/var/lib/postgresql/data
 

@@ -10,17 +10,18 @@ public static class HostExtensions
     {
         using var scope = host.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<HotelBookingDbContext>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<HotelBookingDbContext>>();
         var services = scope.ServiceProvider;
-
+        
         try
         {
             await dbContext.Database.MigrateAsync();
+            logger.LogInformation("Database migrated successfully.");
             await DbSeeder.SeedRolesAsync(dbContext);
             await DbSeeder.SeedAdminUserAsync(services);
         }
         catch (Exception ex)
         {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<HotelBookingDbContext>>();
             logger.LogError(ex, "An error occurred while migrating or seeding the database.");
             throw;
         }

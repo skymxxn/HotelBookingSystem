@@ -8,5 +8,5 @@ public class SmtpOptions
     public string Password { get; set; } =  default!;
     public string SenderEmail { get; set; } = default!;
     public string SenderName { get; set; } = default!;
-    public string BackendUrl { get; set; } = default!;
+    public string FrontendUrl { get; set; } = default!;
 }

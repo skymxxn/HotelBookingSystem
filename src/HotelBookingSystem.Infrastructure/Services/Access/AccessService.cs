@@ -15,6 +15,11 @@ public class AccessService : IAccessService
 
     public IQueryable<Booking> ApplyBookingAccessFilter(IQueryable<Booking> query)
     {
+        if (!_currentUser.IsAuthenticated())
+        {
+            return query.Where(_ => false);
+        }
+        
         var userId = _currentUser.GetUserId();
         
         if (_currentUser.IsManager())
@@ -31,6 +36,11 @@ public class AccessService : IAccessService
 
     public IQueryable<Hotel> ApplyHotelAccessFilter(IQueryable<Hotel> query)
     {
+        if (!_currentUser.IsAuthenticated())
+        {
+            return query.Where(h => h.IsPublished && h.IsApproved);
+        }
+        
         var userId = _currentUser.GetUserId();
         
         if (_currentUser.IsUser())
@@ -47,6 +57,11 @@ public class AccessService : IAccessService
 
     public IQueryable<Room> ApplyRoomAccessFilter(IQueryable<Room> query)
     {
+        if (!_currentUser.IsAuthenticated())
+        {
+            return query.Where(r => r.IsPublished && r.IsApproved);
+        }
+        
         var userId = _currentUser.GetUserId();
         
         if (_currentUser.IsUser())

@@ -31,8 +31,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseSerilogRequestLogging();
 
-app.UseHttpsRedirection();
-
 app.UseRateLimiter();
 
 app.UseAuthentication();
@@ -41,7 +39,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 Log.Information("HotelBookingSystem is starting up on server {Url}",
-    builder.Configuration["ASPNETCORE_URLS"] ?? "http://localhost:5000");
+    builder.Configuration["AppInfo:BaseUrl"]);
 
 await app.MigrateAndSeedAsync();
 

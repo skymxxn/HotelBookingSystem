@@ -39,7 +39,6 @@ public static class DbSeeder
 
         if (await context.Users.AnyAsync(u => u.Email == adminEmail))
         {
-            logger.LogWarning("Admin user already exists");
             return;
         }
         
