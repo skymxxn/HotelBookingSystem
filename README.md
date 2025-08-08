@@ -151,3 +151,5 @@ dotnet ef migrations remove --project src/HotelBooking.Persistence
 Разработчик: [Руслан (skymxxn)](https://github.com/skymxxn)  
 Специализация: Backend (.NET)  
 Проект создан как showcase с прицелом на продакшн-качество и понимание архитектурных паттернов.
+
+Если есть желание пообщаться, дать фидбек или предложить сотрудничество - пишите в [Telegram](https://t.me/skymxxn)
