@@ -1,6 +1,7 @@
 # HotelBookingSystem
 
-**HotelBookingSystem** — это backend-сервис для управления бронированиями отелей, реализованный на платформе ASP.NET Core с использованием современных подходов в архитектуре и безопасности. Проект разрабатывался как учебно-практический, но с ориентацией на реальные бизнес-задачи.
+**HotelBookingSystem** — это backend-сервис для управления бронированиями отелей, реализованный на платформе ASP.NET Core с использованием современных подходов в архитектуре и безопасности. 
+Проект разрабатывался как учебно-практический, но с ориентацией на реальные бизнес-задачи.
 
 ---
 
@@ -22,7 +23,9 @@
 
 ### Требования:
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download) - для компиляции и работы с проектом
+- [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime) - для запуска API-приложения вне SDK
+- [Entity Framework Core Tools (dotnet-ef)](https://learn.microsoft.com/en-us/ef/core/cli/dotnet) - для создания и управления миграциями:
 - [Docker](https://www.docker.com/)
 - PostgreSQL (локально или в Docker)
 - SMTP-сервер для отправки писем
@@ -46,18 +49,26 @@ cp .env.example .env
 - SMTP-данные
 - Секреты для JWT
 - Подключение к PostgreSQL
-- Admin credentials (по желанию)
+- Admin credentials
 
-### 3. Запуск проекта
+### 3. Создание миграций
+
+Перед тем как запускать `docker compose up`, убедитесь, что миграции для базы данных созданы:
+```bash
+# в корне проекта
+dotnet ef migrations add InitialCreate --project src/HotelBookingSystem.Persistence --startup-project src/HotelBookingSystem.API
+```
+
+### 4. Запуск проекта
 
 ```bash
 docker-compose up --build
 ```
 
-### 4. Доступ
+### 5. Доступ
 
-- API: [http://localhost:5000](http://localhost:5000)  
-- Swagger: [http://localhost:5000/swagger](http://localhost:5000/swagger)
+- API: [http://localhost:8080](http://localhost:8080)  
+- Swagger: [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
 ---
 
@@ -83,6 +94,26 @@ src/
 - Отдельный токен для подтверждения бронирования
 - Сброс пароля через токен-ссылку
 - Конфигурация токенов через `appsettings.json` и `IOptions`
+
+---
+
+## Кастомный AccessService
+
+В проекте используется `IAccessService` — специальный сервис для фильтрации доступа к данным на уровне запросов.
+Это помогает централизованно управлять доступом к данным, не размазывая условия по всем хендлерам или контроллерам.
+
+**Реализация:** `AccessService` из `Infrastructure.Services.Access`
+
+Сервис обрабатывает запросы к данным на основе текущего пользователя, определяя, кто и какие записи может видеть:
+
+- **Booking**:
+  -  Пользователь видит только свои бронирования
+  -  Менеджер — только бронирования в своих отелях
+  -  Гость (неавторизованный) — ничего не видит
+- **Hotel** и **Room**:
+  -  Пользователь видит только опубликованные и одобренные
+  -  Менеджер — только свои объекты
+  -  Гость — только опубликованные и одобренные
 
 ---
 
@@ -115,22 +146,7 @@ Email: admin@hotel.com
 Пароль: Admin123!
 ```
 
-Изменения — в `.env`.
-
----
-
-## Работа с миграциями
-
-```bash
-# Добавить миграцию
-dotnet ef migrations add MigrationName --project src/HotelBooking.Persistence --startup-project src/HotelBooking.API
-
-# Применить миграции
-dotnet ef database update --project src/HotelBooking.Persistence
-
-# Удалить последнюю миграцию
-dotnet ef migrations remove --project src/HotelBooking.Persistence
-```
+Изменения - в `.env`.
 
 ---
 
