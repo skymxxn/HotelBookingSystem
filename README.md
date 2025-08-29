@@ -34,7 +34,6 @@
 
 ```bash
 git clone https://github.com/skymxxn/HotelBookingSystem.git
-cd HotelBookingSystem
 ```
 
 ### 2. Настройка переменных окружения
@@ -55,7 +54,6 @@ cp .env.example .env
 
 Перед тем как запускать `docker compose up`, убедитесь, что миграции для базы данных созданы:
 ```bash
-# в корне проекта
 dotnet ef migrations add InitialCreate --project src/HotelBookingSystem.Persistence --startup-project src/HotelBookingSystem.API
 ```
 
@@ -67,7 +65,7 @@ docker-compose up --build
 
 ### 5. Доступ
 
-- API: [http://localhost:8080](http://localhost:8080)  
+- API: [http://localhost:8080/api/hotels](http://localhost:8080)  
 - Swagger: [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
 ---
@@ -113,7 +111,7 @@ src/
 - **Hotel** и **Room**:
   -  Пользователь видит только опубликованные и одобренные
   -  Менеджер — только свои объекты
-  -  Гость — только опубликованные и одобренные
+  -  Гость — также как и пользователь, видит только опубликованные и одобренные
 
 ---
 
