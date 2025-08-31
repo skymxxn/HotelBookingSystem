@@ -1,5 +1,6 @@
 ﻿services:
-  hotelbooking.api:
+  hotel-booking.api:
+    container_name: hotel-booking.api
     build:
       context: .
       dockerfile: src/HotelBookingSystem.API/Dockerfile
@@ -15,13 +16,14 @@
       - SmtpOptions__Username=${SMTP_USERNAME}
       - SmtpOptions__SenderEmail=${SMTP_SENDEREMAIL}
       - SmtpOptions__Password=${SMTP_PASSWORD}
-      - SmtpOptions__FrontendUrl=${SMTP_FRONTEND_URL}
       - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
     depends_on:
-      - db
+      - hotel-booking.db
+      - hotel-booking.cache
 
-  db:
+  hotel-booking.db:
+    container_name: hotel-booking.db
     image: postgres:16
     ports:
       - "5432:5432"
@@ -31,6 +33,15 @@
       POSTGRES_DB: HotelDb
     volumes:
       - db_data:/var/lib/postgresql/data
+  
+  hotel-booking.cache:
+    container_name: hotel-booking.cache
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   db_data:
+  redis_data:

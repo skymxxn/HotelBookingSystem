@@ -36,8 +36,13 @@ public static class InfrastructureServiceRegistration
         services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
         services.AddTransient<IEmailService, EmailService>();
 
-        services.AddMemoryCache();
-        services.AddSingleton<ICacheService, CacheService>();
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration["Redis:Configuration"];
+            options.InstanceName = configuration["Redis:InstanceName"];
+        });
+        
+        services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
         return services;
     }

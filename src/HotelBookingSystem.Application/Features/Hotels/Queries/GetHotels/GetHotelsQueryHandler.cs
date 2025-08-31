@@ -3,6 +3,7 @@ using HotelBookingSystem.Application.Common.DTOs.Hotels;
 using HotelBookingSystem.Application.Common.Interfaces.Access;
 using HotelBookingSystem.Application.Common.Interfaces.Cache;
 using HotelBookingSystem.Application.Common.Interfaces.Persistence;
+using HotelBookingSystem.Application.Common.Utils;
 using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -13,23 +14,35 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
 {
     private readonly IHotelBookingDbContext _context;
     private readonly IAccessService _accessService;
-    private readonly ICacheService _cacheService;
+    private readonly IRedisCacheService _cache;
 
-    public GetHotelsQueryHandler(IHotelBookingDbContext context, IAccessService accessService, ICacheService cacheService)
+    public GetHotelsQueryHandler(IHotelBookingDbContext context, IAccessService accessService, IRedisCacheService cache)
     {
         _context = context;
         _accessService = accessService;
-        _cacheService = cacheService;
+        _cache = cache;
     }
     
     public async Task<Result<List<HotelResponse>>> Handle(GetHotelsQuery request, CancellationToken cancellationToken)
     {
-        var cacheKey = $"GetHotels_{request.Name}_{request.Address}_{request.IsApproved}_{request.IsPublished}_{request.CreatedAt}_{request.UpdatedAt}_{request.OwnerId}_{request.Page}_{request.PageSize}_{request.SortBy}_{request.SortOrder}";
+        var cacheKey = CacheKeyBuilder.Build("GetHotels",
+            request.Name,
+            request.Address,
+            request.IsApproved,
+            request.IsPublished,
+            request.CreatedAt,
+            request.UpdatedAt,
+            request.OwnerId,
+            request.Page,
+            request.PageSize,
+            request.SortBy,
+            request.SortOrder
+        );
+        
+        var hotels = await _cache.GetDataAsync<List<HotelResponse>>(cacheKey);
 
-        var cached = await _cacheService.GetAsync<List<HotelResponse>>(cacheKey);
-
-        if (cached is not null)
-            return Result.Ok(cached);
+        if (hotels is not null)
+            return Result.Ok(hotels);
         
         var query = _context.Hotels.AsQueryable();
 
@@ -56,7 +69,7 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
         if (request.OwnerId.HasValue)
             query = query.Where(h => h.OwnerId == request.OwnerId.Value);
         
-        query = (request.SortBy?.ToLower(), request.SortOrder?.ToLower()) switch
+        query = (request.SortBy?.ToLower(), request.SortOrder.ToLower()) switch
         {
             ("name", "asc") => query.OrderBy(h => h.Name),
             ("name", "desc") => query.OrderByDescending(h => h.Name),
@@ -76,11 +89,11 @@ public class GetHotelsQueryHandler : IRequestHandler<GetHotelsQuery, Result<List
         var skip = (request.Page - 1) * request.PageSize;
         query = query.Skip(skip).Take(request.PageSize);
         
-        var hotels = await query
+        hotels = await query
             .ProjectToType<HotelResponse>()
             .ToListAsync(cancellationToken);
 
-        await _cacheService.SetAsync(cacheKey, hotels, TimeSpan.FromMinutes(5));
+        await _cache.SetDataAsync(cacheKey, hotels);
 
         return Result.Ok(hotels);
     }
