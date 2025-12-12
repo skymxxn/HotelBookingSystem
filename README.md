@@ -12,7 +12,8 @@
 - Управление бронированиями (создание, изменение, отмена)
 - Роль менеджер имеет возможность управлять отелями, комнатами, бронированиями (создание, изменение, публикация/сокрытие, подтверждение, отмена)
 - Email-уведомления с HTML-шаблонами
-- Кэширование популярных GET-запросов
+- Кэширование популярных GET-запросов с помощью Redis
+- Защита от слишком частых запросов (HTTP 419 Too Many Requests)
 - Swagger-документация
 - Контейнеризация через Docker
 - Модульная архитектура, CQRS (MediatR), многослойный подход
@@ -25,7 +26,7 @@
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download) - для компиляции и работы с проектом
 - [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime) - для запуска API-приложения вне SDK
-- [Entity Framework Core Tools (dotnet-ef)](https://learn.microsoft.com/en-us/ef/core/cli/dotnet) - для создания и управления миграциями:
+- [Entity Framework Core Tools 8.0.11 (dotnet-ef)](https://learn.microsoft.com/en-us/ef/core/cli/dotnet) - для создания и управления миграциями:
 - [Docker](https://www.docker.com/)
 - PostgreSQL (локально или в Docker)
 - SMTP-сервер для отправки писем
@@ -41,7 +42,7 @@ git clone https://github.com/skymxxn/HotelBookingSystem.git
 Скопируйте и отредактируйте `.env`:
 
 ```bash
-cp .env.example .env
+cp .env.template .env
 ```
 
 Укажите:
@@ -129,8 +130,8 @@ src/
 
 ## Кэширование
 
-- Используется `IMemoryCache`  
-- Реализован `ICacheService` для централизованной логики кэширования
+- Используется `Redis`  
+- Реализован `IRedisCacheService` для централизованной логики кэширования
 - Кэшируются часто запрашиваемые данные (например, список отелей и номеров)
 
 ---
@@ -140,8 +141,8 @@ src/
 При первом запуске создаётся администратор:
 
 ```
-Email: admin@hotel.com
-Пароль: Admin123!
+Email: your_admin_email@example.com
+Пароль: YourSecureAdminPassword123!
 ```
 
 Изменения - в `.env`.
@@ -150,7 +151,6 @@ Email: admin@hotel.com
 
 ## Возможности для развития
 
-- Подключение Redis для распределённого кэша
 - OAuth2 / Social login (Google, GitHub)
 - Очереди (RabbitMQ / Kafka)
 - Интеграционные и нагрузочные тесты
