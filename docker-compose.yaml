@@ -19,8 +19,10 @@
       - DEFAULT_ADMIN_EMAIL=${DEFAULT_ADMIN_EMAIL}
       - DEFAULT_ADMIN_PASSWORD=${DEFAULT_ADMIN_PASSWORD}
     depends_on:
-      - hotel-booking.db
-      - hotel-booking.cache
+      hotel-booking.db:
+        condition: service_healthy
+      hotel-booking.cache:
+        condition: service_healthy
 
   hotel-booking.db:
     container_name: hotel-booking.db
@@ -33,6 +35,11 @@
       POSTGRES_DB: HotelDb
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d HotelDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   hotel-booking.cache:
     container_name: hotel-booking.cache
@@ -41,6 +48,11 @@
       - "6379:6379"
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db_data:
