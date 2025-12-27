@@ -26,7 +26,6 @@
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download) - для компиляции и работы с проектом
 - [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime) - для запуска API-приложения вне SDK
-- [Entity Framework Core Tools 8.0.11 (dotnet-ef)](https://learn.microsoft.com/en-us/ef/core/cli/dotnet) - для создания и управления миграциями:
 - [Docker](https://www.docker.com/)
 - PostgreSQL (локально или в Docker)
 - SMTP-сервер для отправки писем
@@ -53,7 +52,12 @@ cp .env.template .env
 
 ### 3. Создание миграций
 
-Перед тем как запускать `docker compose up`, убедитесь, что миграции для базы данных созданы:
+Восстановить локальные инструменты:
+```bash
+dotnet tool restore
+```
+
+Создание миграций:
 ```bash
 dotnet ef migrations add InitialCreate --project src/HotelBookingSystem.Persistence --startup-project src/HotelBookingSystem.API
 ```
