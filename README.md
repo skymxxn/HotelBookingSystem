@@ -1,48 +1,67 @@
 # HotelBookingSystem
 
-**HotelBookingSystem** — это backend-сервис для управления бронированиями отелей, реализованный на платформе ASP.NET Core с использованием современных подходов в архитектуре и безопасности. 
-Проект разрабатывался как учебно-практический, но с ориентацией на реальные бизнес-задачи.
+**Hotel Booking System** is a robust, production-ready **Modular Monolith API** built with **ASP.NET Core 8**. The project demonstrates a deep understanding of modern backend architecture, focusing on scalability, security, and clean code principles.
 
 ---
 
-## Основные возможности
+## Key Features
 
-- Регистрация и аутентификация пользователей по ролям (JWT: Access/Refresh токены)
-- Подтверждение email и бронирований через токены
-- Управление бронированиями (создание, изменение, отмена)
-- Роль менеджер имеет возможность управлять отелями, комнатами, бронированиями (создание, изменение, публикация/сокрытие, подтверждение, отмена)
-- Email-уведомления с HTML-шаблонами
-- Кэширование популярных GET-запросов с помощью Redis
-- Защита от слишком частых запросов (HTTP 419 Too Many Requests)
-- Swagger-документация
-- Контейнеризация через Docker
-- Модульная архитектура, CQRS (MediatR), многослойный подход
+* **Modular Monolith Architecture:** Clear separation of concerns using a multilayered approach.
+* **CQRS Pattern:** Implemented via **MediatR** to decouple command and query operations for better scalability.
+* **Advanced Security:**
+    * **JWT Authentication:** Robust Access & Refresh token logic.
+    * **AccessService:** A custom-built authorization layer for granular data filtering (e.g., Managers only see their hotels, Users see only their bookings).
+    * **Rate Limiting:** Protection against brute-force and spam (HTTP 429).
+* **Performance:** Distributed caching strategy with **Redis** for high-traffic endpoints.
+* **Communication:** SMTP integration with professional **HTML-templated** emails for verification and notifications.
+* **Documentation:** Fully interactive API documentation via **Swagger/OpenAPI**.
+
+## Tech Stack
+
+* **Backend:** .NET 8, ASP.NET Core, Entity Framework Core (PostgreSQL)
+* **Caching:** Redis
+* **Messaging:** MediatR (CQRS)
+* **Validation & Logging:** FluentValidation, Serilog (Structured Logging)
+* **DevOps:** Docker, Docker Compose
+* **Security:** ASP.NET Core Identity, JWT
 
 ---
 
-## Быстрый старт
+## Architecture & Structure
 
-### Требования:
+The solution follows **Clean Architecture** principles to ensure the system remains testable and independent of external frameworks:
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download) - для компиляции и работы с проектом
-- [ASP.NET Core Runtime 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0/runtime) - для запуска API-приложения вне SDK
-- [Docker](https://www.docker.com/)
-- PostgreSQL (локально или в Docker)
-- SMTP-сервер для отправки писем
+```
+src/
+├── HotelBooking.API             // Entry point: Controllers, Middlewares, DI Configuration
+├── HotelBooking.Application     // Business Logic: CQRS Handlers, DTOs, Mapping, Validators
+├── HotelBooking.Infrastructure  // External Services: Email (SMTP), Redis Cache, JWT Logic
+├── HotelBooking.Persistence     // Data Access: EF Core Context, Migrations, Configurations
+└── HotelBooking.Domain          // Enterprise Logic: Entities, Domain Rules, Contracts
+```
 
-### 1. Клонирование репозитория
+---
+
+## Quick Start
+
+### Prerequisites
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [Docker Desktop](https://www.docker.com/)
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/skymxxn/HotelBookingSystem.git
 ```
 
-### 2. Настройка переменных окружения
+### 2. Configure Environment
 
-Скопируйте и отредактируйте `.env`:
+Copy the .env.template to .env and provide your specific credentials:
 
-```bash
-cp .env.template .env
-```
+* SMTP settings for Email notifications.
+* JWT Secrets for authentication.
+* PostgreSQL Connection String.
 
 Укажите:
 - SMTP-данные
@@ -50,124 +69,34 @@ cp .env.template .env
 - Подключение к PostgreSQL
 - Admin credentials
 
-### 3. Создание миграций
+### 3. Creating migrations
 
-Восстановить локальные инструменты:
+Restore local tools
 ```bash
 dotnet tool restore
 ```
 
-Создание миграций:
+Creating migrations:
 ```bash
 dotnet ef migrations add InitialCreate --project src/HotelBookingSystem.Persistence --startup-project src/HotelBookingSystem.API
 ```
 
-### 4. Запуск проекта
+### 4. Run with Docker
 
 ```bash
 docker-compose up --build
 ```
 
-### 5. Доступ
+### 5. Access
 
-- API: [http://localhost:8080/api/hotels](http://localhost:8080)  
-- Swagger: [http://localhost:8080/swagger](http://localhost:8080/swagger)
-
----
-
-## Архитектура и структура
-
-Проект построен по принципу **модульного монолита** с чётким разделением ответственности:
-
-```
-src/
-├── HotelBooking.API             // Точка входа, маршрутизация, middleware
-├── HotelBooking.Application     // Бизнес-логика, CQRS, DTO, валидации
-├── HotelBooking.Infrastructure  // Email-сервис, кэш, JWT
-├── HotelBooking.Persistence     // EF Core, миграции, контекст
-└── HotelBooking.Domain          // Доменные сущности, правила, контракты
-```
+- API Base: [http://localhost:8080/api/hotels](http://localhost:8080)  
+- Swagger UI: [http://localhost:8080/swagger](http://localhost:8080/swagger)
 
 ---
 
-## Аутентификация и безопасность
+## License
 
-- Используется JWT (Access и Refresh токены)
-- Подтверждение email через токен-ссылку
-- Отдельный токен для подтверждения бронирования
-- Сброс пароля через токен-ссылку
-- Конфигурация токенов через `appsettings.json` и `IOptions`
-
+### This project is licensed under the MIT License.
 ---
+Developed by [Ruslan (skymxxn)](https://github.com/skymxxn) Backend Developer dedicated to building clean, scalable, and secure systems.
 
-## Кастомный AccessService
-
-В проекте используется `IAccessService` — специальный сервис для фильтрации доступа к данным на уровне запросов.
-Это помогает централизованно управлять доступом к данным, не размазывая условия по всем хендлерам или контроллерам.
-
-**Реализация:** `AccessService` из `Infrastructure.Services.Access`
-
-Сервис обрабатывает запросы к данным на основе текущего пользователя, определяя, кто и какие записи может видеть:
-
-- **Booking**:
-  -  Пользователь видит только свои бронирования
-  -  Менеджер — только бронирования в своих отелях
-  -  Гость (неавторизованный) — ничего не видит
-- **Hotel** и **Room**:
-  -  Пользователь видит только опубликованные и одобренные
-  -  Менеджер — только свои объекты
-  -  Гость — также как и пользователь, видит только опубликованные и одобренные
-
----
-
-## Email-уведомления
-
-Интеграция с SMTP. Поддерживаются следующие события:
-
-- Подтверждение email
-- Создание бронирования
-- Сброс пароля
-
-Каждое письмо оформлено в виде HTML-шаблона.
-
----
-
-## Кэширование
-
-- Используется `Redis`  
-- Реализован `IRedisCacheService` для централизованной логики кэширования
-- Кэшируются часто запрашиваемые данные (например, список отелей и номеров)
-
----
-
-## Тестовый пользователь
-
-При первом запуске создаётся администратор:
-
-```
-Email: your_admin_email@example.com
-Пароль: YourSecureAdminPassword123!
-```
-
-Изменения - в `.env`.
-
----
-
-## Возможности для развития
-
-- OAuth2 / Social login (Google, GitHub)
-- Очереди (RabbitMQ / Kafka)
-- Интеграционные и нагрузочные тесты
-- Улучшенная RBAC-авторизация
-
----
-
----
-
-## Автор
-
-Разработчик: [Руслан (skymxxn)](https://github.com/skymxxn)  
-Специализация: Backend (.NET)  
-Проект создан как showcase с прицелом на продакшн-качество и понимание архитектурных паттернов.
-
-Если есть желание пообщаться, дать фидбек или предложить сотрудничество - пишите в [Telegram](https://t.me/skymxxn)
