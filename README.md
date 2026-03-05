@@ -63,12 +63,6 @@ Copy the .env.template to .env and provide your specific credentials:
 * JWT Secrets for authentication.
 * PostgreSQL Connection String.
 
-Укажите:
-- SMTP-данные
-- Секреты для JWT
-- Подключение к PostgreSQL
-- Admin credentials
-
 ### 3. Creating migrations
 
 Restore local tools
